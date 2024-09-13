@@ -5,7 +5,7 @@ VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MDSoDv2", "MDSoDv2.csproj", "{93640F02-071F-4BB1-83E1-93A51A056FC5}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "MDSoDv2Installer", "..\MDSoDv2Installer\MDSoDv2Installer.vdproj", "{09181E13-2101-4730-BE06-A4DD778529FE}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "MDSoDv2Installer", "MDSoDv2Installer\MDSoDv2Installer.vdproj", "{6EAEA576-4882-411B-BDD3-9640F6E8CB38}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,8 +17,10 @@ Global
 		{93640F02-071F-4BB1-83E1-93A51A056FC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93640F02-071F-4BB1-83E1-93A51A056FC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93640F02-071F-4BB1-83E1-93A51A056FC5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{09181E13-2101-4730-BE06-A4DD778529FE}.Debug|Any CPU.ActiveCfg = Debug
-		{09181E13-2101-4730-BE06-A4DD778529FE}.Release|Any CPU.ActiveCfg = Release
+		{6EAEA576-4882-411B-BDD3-9640F6E8CB38}.Debug|Any CPU.ActiveCfg = Debug
+		{6EAEA576-4882-411B-BDD3-9640F6E8CB38}.Debug|Any CPU.Build.0 = Debug
+		{6EAEA576-4882-411B-BDD3-9640F6E8CB38}.Release|Any CPU.ActiveCfg = Release
+		{6EAEA576-4882-411B-BDD3-9640F6E8CB38}.Release|Any CPU.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
