@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MDSoDv2", "MDSoDv2.csproj", "{93640F02-071F-4BB1-83E1-93A51A056FC5}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "MDSoDv2Installer", "..\MDSoDv2Installer\MDSoDv2Installer.vdproj", "{09181E13-2101-4730-BE06-A4DD778529FE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{93640F02-071F-4BB1-83E1-93A51A056FC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93640F02-071F-4BB1-83E1-93A51A056FC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93640F02-071F-4BB1-83E1-93A51A056FC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93640F02-071F-4BB1-83E1-93A51A056FC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09181E13-2101-4730-BE06-A4DD778529FE}.Debug|Any CPU.ActiveCfg = Debug
+		{09181E13-2101-4730-BE06-A4DD778529FE}.Release|Any CPU.ActiveCfg = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EC9CB29F-F1FE-4162-B89D-109A9B0E2AEC}
+	EndGlobalSection
+EndGlobal
