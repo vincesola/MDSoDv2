@@ -270,6 +270,7 @@
     </Compile>
     <Compile Include="Classes\Session.cs" />
     <Compile Include="Classes\Class.cs" />
+    <Compile Include="Classes\UnknownEntry.cs" />
     <Compile Include="Forms\AddClassForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -356,11 +357,23 @@
     <Compile Include="Forms\DELETE\SelectClassForm.Designer.cs">
       <DependentUpon>SelectClassForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\ReportingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ReportingForm.Designer.cs">
+      <DependentUpon>ReportingForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\SessionForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\SessionForm.Designer.cs">
       <DependentUpon>SessionForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\UnknownsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\UnknownsForm.Designer.cs">
+      <DependentUpon>UnknownsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\UpdateClassForm.cs">
       <SubType>Form</SubType>

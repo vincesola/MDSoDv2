@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Forms;
@@ -1248,5 +1249,71 @@ namespace MDSoDv2
                 }
             }
         }
+        public List<UnknownEntry> GetUnknowns()
+        {
+            var unknownEntries = new List<UnknownEntry>();
+
+            using (var connection = new SQLiteConnection(dbPath))
+            {
+                connection.Open();
+
+                // Get unknowns from Students table
+                var studentQuery = "SELECT * FROM Students";
+                using (var studentCommand = new SQLiteCommand(studentQuery, connection))
+                {
+                    using (var reader = studentCommand.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var fieldValue = reader.GetValue(i).ToString();
+                                // Use IndexOf for case-insensitive search
+                                if (fieldValue.IndexOf("Unknown", StringComparison.OrdinalIgnoreCase) >= 0)
+                                {
+                                    unknownEntries.Add(new UnknownEntry
+                                    {
+                                        EntityType = "Student",
+                                        FirstName = reader["FirstName"].ToString(),
+                                        LastName = reader["LastName"].ToString(),
+                                        FieldWithUnknown = $"{reader.GetName(i)}: {fieldValue}"
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Get unknowns from Parents table
+                var parentQuery = "SELECT * FROM Parents";
+                using (var parentCommand = new SQLiteCommand(parentQuery, connection))
+                {
+                    using (var reader = parentCommand.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var fieldValue = reader.GetValue(i).ToString();
+                                // Use IndexOf for case-insensitive search
+                                if (fieldValue.IndexOf("Unknown", StringComparison.OrdinalIgnoreCase) >= 0)
+                                {
+                                    unknownEntries.Add(new UnknownEntry
+                                    {
+                                        EntityType = "Parent",
+                                        FirstName = reader["FirstName"].ToString(),
+                                        LastName = reader["LastName"].ToString(),
+                                        FieldWithUnknown = $"{reader.GetName(i)}: {fieldValue}"
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return unknownEntries;
+        }
+
     }
 }

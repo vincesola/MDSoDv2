@@ -110,6 +110,13 @@ namespace MDSoDv2
             paymentForm.ShowDialog();
         }
 
+        private void btnReporting_Click(object sender, EventArgs e)
+        {
+            // Open the ReportingForm on the same screen
+            var reportingForm = new ReportingForm(this);
+            reportingForm.Show();
+        }
+
         private void btnExport_Click(object sender, EventArgs e)
         {
             using (var sfd = new SaveFileDialog() { Filter = "Excel Workbook|*.xlsx" })
