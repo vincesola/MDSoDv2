@@ -1,5 +1,4 @@
-﻿using MaterialSkin;
-using MaterialSkin.Controls;
+﻿using MaterialSkin.Controls;
 using System;
 using System.Windows.Forms;
 
@@ -24,61 +23,6 @@ namespace MDSoDv2
         {
             SubmitPassword();
         }
-
-        // New method to handle password validation
-        //private void SubmitPassword()
-        //{
-        //    // Retrieve the encrypted password from the database
-        //    string encryptedStoredPassword = dbHelper.GetConfigurationValue("BackOfficePassword");
-
-        //    if (encryptedStoredPassword != null)
-        //    {
-        //        // Encrypt the entered password using the same key
-        //        string enteredPassword = txtPassword.Text;
-        //        string encryptedEnteredPassword = DatabaseHelper.EncryptString(enteredPassword, encryptionKey);
-
-        //        // Compare encrypted values
-        //        if (encryptedStoredPassword == encryptedEnteredPassword)
-        //        {
-        //            IsAuthenticated = true;
-        //            this.DialogResult = DialogResult.OK; // Close the form with OK result
-        //        }
-        //        else
-        //        {
-        //            MessageBox.Show("Incorrect Password. Please try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        //            txtPassword.Clear();
-        //            txtPassword.Focus();
-        //        }
-        //    }
-        //    else
-        //    {
-        //        // No password exists, prompt the user to set a new one
-        //        DialogResult result = MessageBox.Show("No password is set for BackOffice. Would you like to set a new password now?",
-        //                                              "Set Password", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-        //        if (result == DialogResult.Yes)
-        //        {
-        //            string newPassword = PromptForNewPassword();
-
-        //            if (!string.IsNullOrEmpty(newPassword))
-        //            {
-        //                // Encrypt the new password
-        //                string encryptedNewPassword = DatabaseHelper.EncryptString(newPassword, encryptionKey);
-
-        //                // Store the new encrypted password in the configuration table
-        //                dbHelper.SetConfigurationValue("BackOfficePassword", encryptedNewPassword);
-
-        //                MessageBox.Show("Password has been set successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        //                IsAuthenticated = true;
-        //                this.DialogResult = DialogResult.OK; // Close the form with OK result
-        //            }
-        //        }
-        //        else
-        //        {
-        //            this.DialogResult = DialogResult.Cancel;
-        //        }
-        //    }
-        //}
 
         private void SubmitPassword()
         {
@@ -121,9 +65,6 @@ namespace MDSoDv2
                 txtPassword.Focus();
             }
         }
-
-
-
 
         // Helper method to prompt the user for a new password
         private string PromptForNewPassword()

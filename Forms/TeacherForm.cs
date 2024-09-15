@@ -1,8 +1,8 @@
-﻿using System;
+﻿using MaterialSkin;
+using MaterialSkin.Controls;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
-using MaterialSkin.Controls;
-using MaterialSkin;
 
 namespace MDSoDv2
 {
@@ -12,6 +12,7 @@ namespace MDSoDv2
 
         // Variables for resizing
         private Size originalFormSize;
+
         private Rectangle originalTxtTeacherNameBounds;
         private Rectangle originalLstTeachersBounds;
         private Rectangle originalBtnAddBounds;

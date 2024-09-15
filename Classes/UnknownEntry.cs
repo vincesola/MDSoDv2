@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MDSoDv2
+﻿namespace MDSoDv2
 {
     public class UnknownEntry
     {
@@ -14,4 +8,3 @@ namespace MDSoDv2
         public string FieldWithUnknown { get; set; } // The field that contains "Unknown"
     }
 }
-

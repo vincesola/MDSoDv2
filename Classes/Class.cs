@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MDSoDv2
+﻿namespace MDSoDv2
 {
     public class Class
     {
@@ -16,10 +10,10 @@ namespace MDSoDv2
         public string DayOfWeek { get; set; }
         public string Time { get; set; }
         public string Teachers { get; set; }
+
         public override string ToString()
         {
             return ClassName;
         }
     }
 }
-

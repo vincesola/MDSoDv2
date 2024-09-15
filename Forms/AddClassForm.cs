@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Drawing;
+using System.Collections;
 using System.Collections.Generic;
+using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using MaterialSkin.Controls;
-using MaterialSkin;
-using System.Data;
-using System.Collections;
 
 namespace MDSoDv2
 {
@@ -18,6 +16,7 @@ namespace MDSoDv2
 
         // Variables to store original form size and control bounds for resizing
         private Size originalFormSize;
+
         private Rectangle originalListViewClassesBounds;
         private Rectangle originalBtnAddSelectedClassesBounds;
 

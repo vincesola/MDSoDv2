@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using MaterialSkin;
-using MaterialSkin.Controls;
-using System.Drawing;
 
 namespace MDSoDv2
 {
@@ -16,6 +14,7 @@ namespace MDSoDv2
 
         // Variables to store original size and positions
         private Size originalFormSize;
+
         private Rectangle originalTxtSearchBounds;
         private Rectangle originalChkSearchAllStudentsBounds;
         private Rectangle originalDgvStudentsBounds;
@@ -108,9 +107,9 @@ namespace MDSoDv2
                 // Fetch the selected student ID from the DataGridView
                 DataGridViewRow row = dgvStudents.Rows[e.RowIndex];
                 selectedStudentId = Convert.ToInt32(row.Cells["StudentID"].Value);
-                //MessageBox.Show($"Selected Student ID: {selectedStudentId}", "Row Selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
+
         private void dgvStudents_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             // Ensure the user double-clicked a valid row, and not the header
@@ -132,7 +131,6 @@ namespace MDSoDv2
                 }
             }
         }
-
 
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {

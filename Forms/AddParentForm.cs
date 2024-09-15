@@ -1,9 +1,8 @@
-﻿using System;
+﻿using MaterialSkin.Controls;
+using System;
 using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using MaterialSkin.Controls;
-using MaterialSkin;
 
 namespace MDSoDv2
 {
@@ -15,6 +14,7 @@ namespace MDSoDv2
 
         // Variables to store original form size and control bounds for resizing
         private Size originalFormSize;
+
         private Rectangle originalTxtFirstNameBounds;
         private Rectangle originalTxtLastNameBounds;
         private Rectangle originalTxtPhoneNumberBounds;

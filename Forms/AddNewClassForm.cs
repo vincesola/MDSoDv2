@@ -2,7 +2,6 @@
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using MaterialSkin.Controls;
 
 namespace MDSoDv2
 {
@@ -12,9 +11,9 @@ namespace MDSoDv2
         private DatabaseHelper dbHelper;
         private ClassForm parentForm;
 
-
         // Variables to store original size for resizing logic
         private Size originalFormSize;
+
         private Rectangle originalTxtClassNameBounds;
         private Rectangle originalCmbClassLocationBounds;
         private Rectangle originalCmbDayOfWeekBounds;

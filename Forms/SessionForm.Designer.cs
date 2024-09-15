@@ -60,12 +60,6 @@ namespace MDSoDv2
             this.dgvSessions.Size = new System.Drawing.Size(760, 300);
             this.dgvSessions.TabIndex = 0;
 
-            //this.dgvSessions.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            //this.dgvSessions.Location = new System.Drawing.Point(12, 70);
-            //this.dgvSessions.Name = "dgvSessions";
-            //this.dgvSessions.ReadOnly = true;
-            //this.dgvSessions.Size = new System.Drawing.Size(760, 300);
-            //this.dgvSessions.TabIndex = 0;
             // 
             // btnAddSession
             // 

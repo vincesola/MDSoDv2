@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace MDSoDv2
 {
@@ -22,4 +18,3 @@ namespace MDSoDv2
         public List<int> ClassIDs { get; set; }
     }
 }
-

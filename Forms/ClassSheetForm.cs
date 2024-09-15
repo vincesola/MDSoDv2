@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Windows.Forms;
-using System.Drawing.Printing;
-using MaterialSkin.Controls;
 
 namespace MDSoDv2
 {
@@ -15,6 +14,7 @@ namespace MDSoDv2
 
         // Variables to store original size for resizing logic
         private Size originalFormSize;
+
         private Rectangle originalChkListClasses;
         private Rectangle originalBtnSelectAll;
         private Rectangle originalBtnPrintRosters;
@@ -67,6 +67,7 @@ namespace MDSoDv2
 
             control.Bounds = new Rectangle(newX, newY, newWidth, newHeight);
         }
+
         private void LoadSessions()
         {
             var sessions = dbHelper.GetAllSessions(); // This should return a list of session objects with SessionID and SessionName
@@ -85,10 +86,12 @@ namespace MDSoDv2
                 cmbSessions.SelectedIndex = -1;
             }
         }
+
         private void cmbSessions_SelectedIndexChanged(object sender, EventArgs e)
         {
             LoadClasses();
         }
+
         private void LoadClasses()
         {
             // Check if a session is selected and if SelectedValue is not null
@@ -114,7 +117,6 @@ namespace MDSoDv2
                 chkListClasses.Items.Add(displayText);
             }
         }
-
 
         private void btnSelectAll_Click(object sender, EventArgs e)
         {
@@ -142,6 +144,7 @@ namespace MDSoDv2
                 PrintRosterSheet(classDetails);
             }
         }
+
         private void PrintRosterSheet(Class classDetails)
         {
             PrintDocument printDocument = new PrintDocument();
@@ -179,6 +182,5 @@ namespace MDSoDv2
             printPreviewDialog.Document = printDocument;
             printPreviewDialog.ShowDialog();
         }
-
     }
 }

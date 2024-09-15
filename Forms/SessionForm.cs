@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
-using MaterialSkin;
-using MaterialSkin.Controls;
 
 namespace MDSoDv2
 {
@@ -13,6 +10,7 @@ namespace MDSoDv2
 
         // Variables for resizing
         private Size originalFormSize;
+
         private Rectangle originalDgvSessionsBounds;
         private Rectangle originalBtnAddSessionBounds;
         private Rectangle originalBtnDeleteSessionBounds;

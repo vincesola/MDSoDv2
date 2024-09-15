@@ -1,8 +1,7 @@
-﻿using System;
+﻿using MaterialSkin;
+using MaterialSkin.Controls;
 using System.Drawing;
 using System.Windows.Forms;
-using MaterialSkin;
-using MaterialSkin.Controls;
 
 namespace MDSoDv2
 {
@@ -10,6 +9,7 @@ namespace MDSoDv2
     {
         // Declare the readonly MaterialSkinManager
         private readonly MaterialSkinManager materialSkinManager;
+
         private const int borderWidth = 1;  // Border width for focused and non-focused forms
 
         public BaseForm()

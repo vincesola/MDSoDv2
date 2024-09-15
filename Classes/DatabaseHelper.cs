@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Forms;
@@ -11,6 +10,7 @@ using System.Windows.Forms;
 namespace MDSoDv2
 {
     #region DB Creation
+
     public class DatabaseHelper
     {
         private string dbPath = "Data Source=MDSoDv2.db;Version=3;";
@@ -124,8 +124,11 @@ namespace MDSoDv2
                 command.ExecuteNonQuery();
             }
         }
-        #endregion
+
+        #endregion DB Creation
+
         #region ConfiguartionTable
+
         public void SetConfigurationValue(string key, string value)
         {
             using (var connection = new SQLiteConnection(dbPath))
@@ -161,7 +164,6 @@ namespace MDSoDv2
             }
             return null; // return null if key is not found
         }
-
 
         public static string EncryptString(string plainText, string passphrase)
         {
@@ -219,8 +221,11 @@ namespace MDSoDv2
                 }
             }
         }
-        #endregion
+
+        #endregion ConfiguartionTable
+
         #region Student Methods
+
         public int AddStudent(Student student)
         {
             int newStudentID = 0;
@@ -265,8 +270,6 @@ namespace MDSoDv2
             }
             return newStudentID;
         }
-
-
 
         public void UpdateStudent(Student student)
         {
@@ -400,40 +403,40 @@ namespace MDSoDv2
             return dataTable;
         }
 
-        //public Student GetStudentByName(string firstName, string lastName)
-        //{
-        //    using (var connection = new SQLiteConnection(dbPath))
-        //    {
-        //        connection.Open();
-        //        var query = "SELECT * FROM Students WHERE FirstName = @FirstName AND LastName = @LastName";
-        //        using (var command = new SQLiteCommand(query, connection))
-        //        {
-        //            command.Parameters.AddWithValue("@FirstName", firstName);
-        //            command.Parameters.AddWithValue("@LastName", lastName);
-        //            using (var reader = command.ExecuteReader())
-        //            {
-        //                if (reader.Read())
-        //                {
-        //                    return new Student
-        //                    {
-        //                        StudentID = reader.GetInt32(0),
-        //                        FirstName = reader.GetString(1),
-        //                        LastName = reader.GetString(2),
-        //                        DateOfBirth = reader.GetString(3),
-        //                        StreetAddress = reader.GetString(4),
-        //                        City = reader.GetString(5),
-        //                        State = reader.GetString(6),
-        //                        ZipCode = reader.GetString(7),
-        //                        PhoneNumber = reader.GetString(8),
-        //                        FamilyEmail = reader.GetString(9),
-        //                        Active = reader.GetBoolean(10)
-        //                    };
-        //                }
-        //            }
-        //        }
-        //    }
-        //    return null;
-        //}
+        public Student GetStudentByName(string firstName, string lastName)
+        {
+            using (var connection = new SQLiteConnection(dbPath))
+            {
+                connection.Open();
+                var query = "SELECT * FROM Students WHERE FirstName = @FirstName AND LastName = @LastName";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@FirstName", firstName);
+                    command.Parameters.AddWithValue("@LastName", lastName);
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new Student
+                            {
+                                StudentID = reader.GetInt32(0),
+                                FirstName = reader.GetString(1),
+                                LastName = reader.GetString(2),
+                                DateOfBirth = reader.GetString(3),
+                                StreetAddress = reader.GetString(4),
+                                City = reader.GetString(5),
+                                State = reader.GetString(6),
+                                ZipCode = reader.GetString(7),
+                                PhoneNumber = reader.GetString(8),
+                                FamilyEmail = reader.GetString(9),
+                                Active = reader.GetBoolean(10)
+                            };
+                        }
+                    }
+                }
+            }
+            return null;
+        }
 
         public void DeleteStudent(int studentId)
         {
@@ -455,10 +458,10 @@ namespace MDSoDv2
             using (var connection = new SQLiteConnection(dbPath))
             {
                 connection.Open();
-                string query = @"SELECT c.ClassID, c.ClassName, c.ClassLocation, c.DayOfWeek, c.Time, c.Teachers, s.SessionName 
-                                 FROM Classes c 
-                                 INNER JOIN StudentClasses sc ON c.ClassID = sc.ClassID 
-                                 INNER JOIN Sessions s ON c.SessionID = s.SessionID 
+                string query = @"SELECT c.ClassID, c.ClassName, c.ClassLocation, c.DayOfWeek, c.Time, c.Teachers, s.SessionName
+                                 FROM Classes c
+                                 INNER JOIN StudentClasses sc ON c.ClassID = sc.ClassID
+                                 INNER JOIN Sessions s ON c.SessionID = s.SessionID
                                  WHERE sc.StudentID = @StudentID";
 
                 using (var command = new SQLiteCommand(query, connection))
@@ -485,18 +488,21 @@ namespace MDSoDv2
             }
             return classes;
         }
-        #endregion
+
+        #endregion Student Methods
+
         #region Class Methods
+
         public DataTable GetClassesWithSessionNames()
         {
             using (var connection = new SQLiteConnection(dbPath))
             {
                 string query = @"
-            SELECT 
+            SELECT
                 s.SessionName,
-                c.ClassID, 
-                c.ClassName, 
-                c.ClassLocation, 
+                c.ClassID,
+                c.ClassName,
+                c.ClassLocation,
                 c.DayOfWeek,
                 c.Time,
                 c.Teachers
@@ -535,7 +541,7 @@ namespace MDSoDv2
             {
                 connection.Open();
                 var query = @"
-            SELECT c.ClassID, s.SessionName, c.ClassName, c.ClassLocation, 
+            SELECT c.ClassID, s.SessionName, c.ClassName, c.ClassLocation,
                    c.DayOfWeek, c.Time, c.Teachers
             FROM Classes c
             JOIN Sessions s ON c.SessionID = s.SessionID
@@ -612,11 +618,11 @@ namespace MDSoDv2
                 connection.Open();
                 // Updated query with a join between Classes and Sessions to get the SessionName
                 var query = @"
-            SELECT c.DayOfWeek, c.Time, c.ClassName, c.ClassLocation, s.SessionName, 
+            SELECT c.DayOfWeek, c.Time, c.ClassName, c.ClassLocation, s.SessionName,
                    c.Teachers, c.ClassID
             FROM Classes c
             JOIN Sessions s ON c.SessionID = s.SessionID
-            ORDER BY 
+            ORDER BY
                 CASE c.DayOfWeek
                     WHEN 'Monday' THEN 1
                     WHEN 'Tuesday' THEN 2
@@ -635,6 +641,7 @@ namespace MDSoDv2
             }
             return dataTable;
         }
+
         public List<Class> GetClassesBySessionId(int sessionId)
         {
             var classes = new List<Class>();
@@ -667,6 +674,7 @@ namespace MDSoDv2
 
             return classes;
         }
+
         public List<Class> GetClassesBySessionIdWithStudents(int sessionId)
         {
             var classes = new List<Class>();
@@ -709,7 +717,6 @@ namespace MDSoDv2
             return classes;
         }
 
-
         public void DeleteClass(int classId)
         {
             using (var connection = new SQLiteConnection(dbPath))
@@ -723,8 +730,11 @@ namespace MDSoDv2
                 }
             }
         }
-        #endregion
+
+        #endregion Class Methods
+
         #region Session Methods
+
         public List<Session> GetAllSessions()
         {
             var sessions = new List<Session>();
@@ -749,6 +759,7 @@ namespace MDSoDv2
             }
             return sessions;
         }
+
         public DataTable GetSessionsDataTable()
         {
             var dataTable = new DataTable();
@@ -808,8 +819,11 @@ namespace MDSoDv2
                 }
             }
         }
-        #endregion
+
+        #endregion Session Methods
+
         #region Teacher Methods
+
         public List<Teacher> GetAllTeachers()
         {
             var teachers = new List<Teacher>();
@@ -890,8 +904,11 @@ namespace MDSoDv2
             }
             return dataTable;
         }
-        #endregion
+
+        #endregion Teacher Methods
+
         #region Payment Methods
+
         public void AddPayment(Payment payment)
         {
             using (var connection = new SQLiteConnection(dbPath))
@@ -925,6 +942,7 @@ namespace MDSoDv2
                 }
             }
         }
+
         public void DeletePayment(int paymentId)
         {
             using (var connection = new SQLiteConnection(dbPath))
@@ -1010,7 +1028,9 @@ namespace MDSoDv2
             }
             return dataTable;
         }
-        #endregion
+
+        #endregion Payment Methods
+
         #region Parent Methods
 
         public void AddParent(Parent parent)
@@ -1033,7 +1053,6 @@ namespace MDSoDv2
             }
         }
 
-
         public void DeleteParent(int parentId)
         {
             using (var connection = new SQLiteConnection(dbPath))
@@ -1054,8 +1073,8 @@ namespace MDSoDv2
             {
                 connection.Open();
                 var query = @"UPDATE Parents
-                      SET FirstName = @FirstName, LastName = @LastName, 
-                          PhoneNumber = @PhoneNumber, Email = @Email, 
+                      SET FirstName = @FirstName, LastName = @LastName,
+                          PhoneNumber = @PhoneNumber, Email = @Email,
                           Relationship = @Relationship
                       WHERE ParentID = @ParentID";
                 using (var command = new SQLiteCommand(query, connection))
@@ -1101,7 +1120,9 @@ namespace MDSoDv2
             }
             return parents;
         }
-        #endregion
+
+        #endregion Parent Methods
+
         #region Import Methods
 
         public void ImportStudentsFromDataTable(DataTable dataTable)
@@ -1218,8 +1239,6 @@ namespace MDSoDv2
             }
         }
 
-
-
         public void ImportClassesFromDataTable(DataTable dataTable)
         {
             using (var connection = new SQLiteConnection(dbPath))
@@ -1285,8 +1304,11 @@ namespace MDSoDv2
                 }
             }
         }
-        #endregion
+
+        #endregion Import Methods
+
         #region Reporting - Unknown
+
         public List<UnknownEntry> GetUnknowns()
         {
             var unknownEntries = new List<UnknownEntry>();
@@ -1352,8 +1374,11 @@ namespace MDSoDv2
 
             return unknownEntries;
         }
-        #endregion
+
+        #endregion Reporting - Unknown
+
         #region Reporting - ClassSheets
+
         public List<Class> GetClassesWithStudents()
         {
             var classes = new List<Class>();
@@ -1425,6 +1450,7 @@ namespace MDSoDv2
 
             return students;
         }
-        #endregion
+
+        #endregion Reporting - ClassSheets
     }
 }

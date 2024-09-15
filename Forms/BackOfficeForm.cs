@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Data;
-using System.Linq;
-using System.Windows.Forms;
-using MaterialSkin;
-using MaterialSkin.Controls;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace MDSoDv2
 {
@@ -15,6 +11,7 @@ namespace MDSoDv2
 
         // Track the original bounds for controls
         private Rectangle originalBtnSessionBounds;
+
         private Rectangle originalBtnClassBounds;
         private Rectangle originalBtnTeacherBounds;
         private Rectangle originalBtnParentBounds;

@@ -1,11 +1,10 @@
-﻿using System;
+﻿using ClosedXML.Excel;
+using System;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Windows.Forms;
-using ClosedXML.Excel;
-using System.Drawing.Printing;
-using MaterialSkin.Controls;
 
 namespace MDSoDv2
 {
@@ -13,6 +12,7 @@ namespace MDSoDv2
     {
         // Variables to store original size and positions for resizing logic
         private Size originalFormSize;
+
         private Rectangle originalDgvUnknownsBounds;
         private Rectangle originalBtnSaveToFileBounds;
         private Rectangle originalBtnPrintBounds;

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using MaterialSkin.Controls;
 
 namespace MDSoDv2
 {
@@ -11,6 +10,7 @@ namespace MDSoDv2
 
         // Variables to store original size for resizing logic
         private Size originalFormSize;
+
         private Rectangle originalCmbSessionBounds;
         private Rectangle originalDgvClassesBounds;
         private Rectangle originalBtnAddClassBounds;
@@ -126,6 +126,7 @@ namespace MDSoDv2
                 }
             }
         }
+
         private void btnUpdateClass_Click(object sender, EventArgs e)
         {
             // Ensure a row is selected in the DataGridView

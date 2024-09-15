@@ -1,11 +1,10 @@
-﻿using System;
+﻿using MaterialSkin.Controls;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using MaterialSkin.Controls;
-using MaterialSkin;
-using System.Drawing;
 
 namespace MDSoDv2
 {
@@ -18,6 +17,7 @@ namespace MDSoDv2
 
         // Variables to store original form size and control bounds
         private Size originalFormSize;
+
         private Rectangle originalTxtFirstNameBounds;
         private Rectangle originalTxtLastNameBounds;
         private Rectangle originalTxtDateOfBirthBounds;
@@ -481,6 +481,7 @@ namespace MDSoDv2
                 this.Close();
             }
         }
+
         private void CmbState_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Logic to handle the state change, such as validation or updating the UI

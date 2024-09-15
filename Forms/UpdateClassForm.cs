@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using MaterialSkin.Controls;
-using System.Drawing;
-
 
 namespace MDSoDv2
 {
@@ -44,6 +41,7 @@ namespace MDSoDv2
 
             PopulateClassLocations(selectedClass.ClassLocation);
         }
+
         private void PopulateClassLocations(string classLocation)
         {
             cmbClassLocation.Items.Clear();
@@ -51,6 +49,7 @@ namespace MDSoDv2
 
             cmbClassLocation.SelectedIndex = cmbClassLocation.FindStringExact(classLocation);
         }
+
         private void PopulateDayOfWeek(string dayOfWeek)
         {
             cmbDayOfWeek.Items.Clear();
@@ -58,6 +57,7 @@ namespace MDSoDv2
 
             cmbDayOfWeek.SelectedIndex = cmbDayOfWeek.FindStringExact(dayOfWeek);
         }
+
         private void PopulateTimeSlots(string time)
         {
             cmbTime.Items.Clear();
@@ -72,6 +72,7 @@ namespace MDSoDv2
 
             cmbTime.SelectedIndex = cmbTime.FindStringExact(time);
         }
+
         private void PopulateTeachers(string teachers)
         {
             // Ensure dbHelper is instantiated
@@ -100,7 +101,7 @@ namespace MDSoDv2
                 if (teacher != null)
                 {
                     string teacherName = teacher.TeacherName; // Adjust this according to the actual property
-                                                       // Add each teacher's name to the list, checking if the teacher is in the 'teachers' string
+                                                              // Add each teacher's name to the list, checking if the teacher is in the 'teachers' string
                     chkTeachers.Items.Add(teacherName, teachers.Contains(teacherName));
                 }
             }
@@ -117,7 +118,6 @@ namespace MDSoDv2
             // Select the correct session
             cmbSession.SelectedIndex = cmbSession.FindStringExact(sessionName);
         }
-
 
         private void PopulateSessions()
         {
@@ -164,7 +164,6 @@ namespace MDSoDv2
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
-
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
