@@ -32,6 +32,7 @@ namespace MDSoDv2
 
             // Hook up DataGridView cell click event
             dgvClasses.CellClick += DgvClasses_CellClick;
+            dgvClasses.CellDoubleClick += dgvClasses_CellDoubleClick;
         }
 
         private void ClassForm_Load(object sender, EventArgs e)
@@ -101,6 +102,19 @@ namespace MDSoDv2
             }
         }
 
+        private void dgvClasses_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            // Ensure the user clicked on a valid row and not the header
+            if (e.RowIndex >= 0)
+            {
+                // Select the row and invoke the update functionality
+                dgvClasses.Rows[e.RowIndex].Selected = true;
+
+                // Call the update logic
+                btnUpdateClass_Click(sender, e);
+            }
+        }
+
         private void btnAddClass_Click(object sender, EventArgs e)
         {
             using (var addNewClassForm = new AddNewClassForm(this))
@@ -110,6 +124,46 @@ namespace MDSoDv2
                     LoadSessions(); // Reload sessions when AddNewClassForm is closed
                     LoadClasses(); // Reload classes when AddClassForm is closed
                 }
+            }
+        }
+        private void btnUpdateClass_Click(object sender, EventArgs e)
+        {
+            // Ensure a row is selected in the DataGridView
+            if (dgvClasses.SelectedRows.Count > 0)
+            {
+                try
+                {
+                    // Retrieve the selected ClassID from the DataGridView
+                    DataGridViewRow selectedRow = dgvClasses.SelectedRows[0];
+                    int selectedClassId = Convert.ToInt32(selectedRow.Cells["ClassID"].Value);
+
+                    // Fetch the class data from the database using the ClassID
+                    var selectedClass = dbHelper.GetClassById(selectedClassId);
+
+                    // Open the UpdateClassForm with the selected class data
+                    if (selectedClass != null)
+                    {
+                        var updateClassForm = new UpdateClassForm(this, selectedClass);
+                        if (updateClassForm.ShowDialog() == DialogResult.OK)
+                        {
+                            // Refresh the data grid after updating the class
+                            LoadClasses();
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("The selected class could not be found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Handle any errors that occur during retrieval
+                    MessageBox.Show($"An error occurred while updating the class: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please select a class to update.", "Selection Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
