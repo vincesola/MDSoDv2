@@ -530,7 +530,13 @@ namespace MDSoDv2
             using (var connection = new SQLiteConnection(dbPath))
             {
                 connection.Open();
-                var query = "SELECT * FROM Classes WHERE ClassID = @ClassID";
+                var query = @"
+            SELECT c.ClassID, s.SessionName, c.ClassName, c.ClassLocation, 
+                   c.DayOfWeek, c.Time, c.Teachers
+            FROM Classes c
+            JOIN Sessions s ON c.SessionID = s.SessionID
+            WHERE c.ClassID = @ClassID";
+
                 using (var command = new SQLiteCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@ClassID", classId);
@@ -541,7 +547,7 @@ namespace MDSoDv2
                             return new Class
                             {
                                 ClassID = reader.GetInt32(0),
-                                SessionID = reader.GetInt32(1),
+                                SessionName = reader.GetString(1),
                                 ClassName = reader.GetString(2),
                                 ClassLocation = reader.GetString(3),
                                 DayOfWeek = reader.GetString(4),
