@@ -16,6 +16,10 @@ namespace MDSoDv2
         public string DayOfWeek { get; set; }
         public string Time { get; set; }
         public string Teachers { get; set; }
+        public override string ToString()
+        {
+            return ClassName;
+        }
     }
 }
 

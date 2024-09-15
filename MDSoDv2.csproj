@@ -318,6 +318,12 @@
     </Compile>
     <Compile Include="Classes\DatabaseHelper.cs" />
     <Compile Include="Classes\ExcelHelper.cs" />
+    <Compile Include="Forms\ClassSheetForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ClassSheetForm.Designer.cs">
+      <DependentUpon>ClassSheetForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -403,6 +409,9 @@
       <DependentUpon>TeacherForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Classes\WorksheetExtensions.cs" />
+    <EmbeddedResource Include="Forms\ClassSheetForm.resx">
+      <DependentUpon>ClassSheetForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

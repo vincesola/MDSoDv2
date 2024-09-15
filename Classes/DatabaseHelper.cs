@@ -10,6 +10,7 @@ using System.Windows.Forms;
 
 namespace MDSoDv2
 {
+    #region DB Creation
     public class DatabaseHelper
     {
         private string dbPath = "Data Source=MDSoDv2.db;Version=3;";
@@ -123,7 +124,8 @@ namespace MDSoDv2
                 command.ExecuteNonQuery();
             }
         }
-
+        #endregion
+        #region ConfiguartionTable
         public void SetConfigurationValue(string key, string value)
         {
             using (var connection = new SQLiteConnection(dbPath))
@@ -217,8 +219,8 @@ namespace MDSoDv2
                 }
             }
         }
-
-        // Student Methods
+        #endregion
+        #region Student Methods
         public int AddStudent(Student student)
         {
             int newStudentID = 0;
@@ -398,40 +400,40 @@ namespace MDSoDv2
             return dataTable;
         }
 
-        public Student GetStudentByName(string firstName, string lastName)
-        {
-            using (var connection = new SQLiteConnection(dbPath))
-            {
-                connection.Open();
-                var query = "SELECT * FROM Students WHERE FirstName = @FirstName AND LastName = @LastName";
-                using (var command = new SQLiteCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@FirstName", firstName);
-                    command.Parameters.AddWithValue("@LastName", lastName);
-                    using (var reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            return new Student
-                            {
-                                StudentID = reader.GetInt32(0),
-                                FirstName = reader.GetString(1),
-                                LastName = reader.GetString(2),
-                                DateOfBirth = reader.GetString(3),
-                                StreetAddress = reader.GetString(4),
-                                City = reader.GetString(5),
-                                State = reader.GetString(6),
-                                ZipCode = reader.GetString(7),
-                                PhoneNumber = reader.GetString(8),
-                                FamilyEmail = reader.GetString(9),
-                                Active = reader.GetBoolean(10)
-                            };
-                        }
-                    }
-                }
-            }
-            return null;
-        }
+        //public Student GetStudentByName(string firstName, string lastName)
+        //{
+        //    using (var connection = new SQLiteConnection(dbPath))
+        //    {
+        //        connection.Open();
+        //        var query = "SELECT * FROM Students WHERE FirstName = @FirstName AND LastName = @LastName";
+        //        using (var command = new SQLiteCommand(query, connection))
+        //        {
+        //            command.Parameters.AddWithValue("@FirstName", firstName);
+        //            command.Parameters.AddWithValue("@LastName", lastName);
+        //            using (var reader = command.ExecuteReader())
+        //            {
+        //                if (reader.Read())
+        //                {
+        //                    return new Student
+        //                    {
+        //                        StudentID = reader.GetInt32(0),
+        //                        FirstName = reader.GetString(1),
+        //                        LastName = reader.GetString(2),
+        //                        DateOfBirth = reader.GetString(3),
+        //                        StreetAddress = reader.GetString(4),
+        //                        City = reader.GetString(5),
+        //                        State = reader.GetString(6),
+        //                        ZipCode = reader.GetString(7),
+        //                        PhoneNumber = reader.GetString(8),
+        //                        FamilyEmail = reader.GetString(9),
+        //                        Active = reader.GetBoolean(10)
+        //                    };
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return null;
+        //}
 
         public void DeleteStudent(int studentId)
         {
@@ -483,6 +485,8 @@ namespace MDSoDv2
             }
             return classes;
         }
+        #endregion
+        #region Class Methods
         public DataTable GetClassesWithSessionNames()
         {
             using (var connection = new SQLiteConnection(dbPath))
@@ -525,7 +529,6 @@ namespace MDSoDv2
             }
         }
 
-        // Class Methods
         public Class GetClassById(int classId)
         {
             using (var connection = new SQLiteConnection(dbPath))
@@ -632,47 +635,80 @@ namespace MDSoDv2
             }
             return dataTable;
         }
-
-        //public List<Class> GetAllClasses()
-        //{
-        //    var dataTable = GetClassesDataTable();
-        //    var classes = new List<Class>();
-
-        //    foreach (DataRow row in dataTable.Rows)
-        //    {
-        //        var classItem = new Class
-        //        {
-        //            ClassID = Convert.ToInt32(row["ClassID"]),
-        //            ClassName = row["ClassName"].ToString(),
-        //            ClassLocation = row["ClassLocation"].ToString(),
-        //            SessionName = row["SessionName"].ToString(),
-        //            DayOfWeek = row["DayOfWeek"].ToString(),
-        //            Time = row["Time"].ToString(),
-        //            Teachers = row["Teachers"].ToString()
-        //        };
-        //        classes.Add(classItem);
-        //    }
-
-        //    return classes;
-        //}
-        public DataTable GetClassesBySessionId(int sessionId)
+        public List<Class> GetClassesBySessionId(int sessionId)
         {
+            var classes = new List<Class>();
+
             using (var connection = new SQLiteConnection(dbPath))
             {
                 connection.Open();
-                var query = "SELECT * FROM Classes WHERE SessionID = @SessionID";
+                string query = @"
+                SELECT ClassID, ClassName
+                FROM Classes
+                WHERE SessionID = @SessionID";
+
                 using (var command = new SQLiteCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@SessionID", sessionId);
-                    using (var adapter = new SQLiteDataAdapter(command))
+
+                    using (var reader = command.ExecuteReader())
                     {
-                        var classesTable = new DataTable();
-                        adapter.Fill(classesTable);
-                        return classesTable;
+                        while (reader.Read())
+                        {
+                            classes.Add(new Class
+                            {
+                                ClassID = reader.GetInt32(0),
+                                ClassName = reader.GetString(1)
+                            });
+                        }
                     }
                 }
             }
+
+            return classes;
         }
+        public List<Class> GetClassesBySessionIdWithStudents(int sessionId)
+        {
+            var classes = new List<Class>();
+
+            using (var connection = new SQLiteConnection(dbPath))
+            {
+                connection.Open();
+
+                // Updated query to include ClassLocation, DayOfWeek, and Time
+                var query = @"
+        SELECT c.ClassID, c.ClassName, c.ClassLocation, c.DayOfWeek, c.Time
+        FROM Classes c
+        JOIN StudentClasses sc ON sc.ClassID = c.ClassID
+        WHERE c.SessionID = @SessionID
+        GROUP BY c.ClassID, c.ClassName, c.ClassLocation, c.DayOfWeek, c.Time
+        HAVING COUNT(sc.StudentID) > 0"; // Ensures only classes with students are selected
+
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@SessionID", sessionId);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var classObj = new Class
+                            {
+                                ClassID = reader.GetInt32(0),
+                                ClassName = reader.GetString(1),
+                                ClassLocation = reader.GetString(2), // Retrieve ClassLocation
+                                DayOfWeek = reader.GetString(3),      // Retrieve DayOfWeek
+                                Time = reader.GetString(4)            // Retrieve Time
+                            };
+                            classes.Add(classObj);
+                        }
+                    }
+                }
+            }
+
+            return classes;
+        }
+
 
         public void DeleteClass(int classId)
         {
@@ -687,8 +723,8 @@ namespace MDSoDv2
                 }
             }
         }
-
-        // Session Methods
+        #endregion
+        #region Session Methods
         public List<Session> GetAllSessions()
         {
             var sessions = new List<Session>();
@@ -772,8 +808,8 @@ namespace MDSoDv2
                 }
             }
         }
-
-        // Teacher Methods
+        #endregion
+        #region Teacher Methods
         public List<Teacher> GetAllTeachers()
         {
             var teachers = new List<Teacher>();
@@ -854,8 +890,8 @@ namespace MDSoDv2
             }
             return dataTable;
         }
-
-        // Payment Methods
+        #endregion
+        #region Payment Methods
         public void AddPayment(Payment payment)
         {
             using (var connection = new SQLiteConnection(dbPath))
@@ -974,8 +1010,8 @@ namespace MDSoDv2
             }
             return dataTable;
         }
-
-        // Parent Methods
+        #endregion
+        #region Parent Methods
 
         public void AddParent(Parent parent)
         {
@@ -1065,9 +1101,9 @@ namespace MDSoDv2
             }
             return parents;
         }
+        #endregion
+        #region Import Methods
 
-
-        // Import Methods
         public void ImportStudentsFromDataTable(DataTable dataTable)
         {
             using (var connection = new SQLiteConnection(dbPath))
@@ -1249,6 +1285,8 @@ namespace MDSoDv2
                 }
             }
         }
+        #endregion
+        #region Reporting - Unknown
         public List<UnknownEntry> GetUnknowns()
         {
             var unknownEntries = new List<UnknownEntry>();
@@ -1314,6 +1352,79 @@ namespace MDSoDv2
 
             return unknownEntries;
         }
+        #endregion
+        #region Reporting - ClassSheets
+        public List<Class> GetClassesWithStudents()
+        {
+            var classes = new List<Class>();
 
+            using (var connection = new SQLiteConnection(dbPath))
+            {
+                connection.Open();
+                // Query to get classes that have students
+                string query = @"
+                    SELECT DISTINCT c.ClassID, c.ClassName
+                    FROM Classes c
+                    INNER JOIN StudentClasses sc ON c.ClassID = sc.ClassID
+                    INNER JOIN Students s ON sc.StudentID = s.StudentID";
+
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var classObj = new Class
+                            {
+                                ClassID = reader.GetInt32(0),
+                                ClassName = reader.GetString(1)
+                            };
+                            classes.Add(classObj);
+                        }
+                    }
+                }
+            }
+
+            return classes;
+        }
+
+        // Method to get students by class ID
+        public List<Student> GetStudentsByClassId(int classId)
+        {
+            var students = new List<Student>();
+
+            using (var connection = new SQLiteConnection(dbPath))
+            {
+                connection.Open();
+                // Query to get students by class ID
+                string query = @"
+                    SELECT s.StudentID, s.FirstName, s.LastName
+                    FROM Students s
+                    INNER JOIN StudentClasses sc ON s.StudentID = sc.StudentID
+                    WHERE sc.ClassID = @ClassID";
+
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@ClassID", classId);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var student = new Student
+                            {
+                                StudentID = reader.GetInt32(0),
+                                FirstName = reader.GetString(1),
+                                LastName = reader.GetString(2)
+                            };
+                            students.Add(student);
+                        }
+                    }
+                }
+            }
+
+            return students;
+        }
+        #endregion
     }
 }
