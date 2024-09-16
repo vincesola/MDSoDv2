@@ -13,117 +13,90 @@
             base.Dispose(disposing);
         }
 
+        #region Windows Form Designer generated code
+
         private void InitializeComponent()
         {
-            this.dtpPaymentDate = new System.Windows.Forms.DateTimePicker();
-            this.txtAmount = new System.Windows.Forms.TextBox();
-            this.cmbPaymentMethod = new System.Windows.Forms.ComboBox();
-            this.btnSave = new System.Windows.Forms.Button();
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.lblPaymentDate = new System.Windows.Forms.Label();
-            this.lblAmount = new System.Windows.Forms.Label();
-            this.lblPaymentMethod = new System.Windows.Forms.Label();
+            this.txtSearch = new System.Windows.Forms.TextBox();
+            this.dgvStudents = new System.Windows.Forms.DataGridView();
+            this.btnPaymentHistory = new System.Windows.Forms.Button();
+            this.btnGeneratePayments = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvStudents)).BeginInit();
             this.SuspendLayout();
             // 
-            // dtpPaymentDate
+            // txtSearch
             // 
-            this.dtpPaymentDate.Location = new System.Drawing.Point(150, 20);
-            this.dtpPaymentDate.Name = "dtpPaymentDate";
-            this.dtpPaymentDate.Size = new System.Drawing.Size(200, 20);
-            this.dtpPaymentDate.TabIndex = 0;
+            this.txtSearch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(242)))), ((int)(((byte)(242)))));
+            this.txtSearch.Font = new System.Drawing.Font("Roboto", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.txtSearch.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.txtSearch.Location = new System.Drawing.Point(12, 84);
+            this.txtSearch.Name = "txtSearch";
+            this.txtSearch.Size = new System.Drawing.Size(260, 24);
+            this.txtSearch.TabIndex = 0;
+            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
             // 
-            // txtAmount
+            // dgvStudents
             // 
-            this.txtAmount.Location = new System.Drawing.Point(150, 60);
-            this.txtAmount.Name = "txtAmount";
-            this.txtAmount.Size = new System.Drawing.Size(200, 20);
-            this.txtAmount.TabIndex = 1;
+            this.dgvStudents.AllowUserToAddRows = false;
+            this.dgvStudents.AllowUserToDeleteRows = false;
+            this.dgvStudents.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvStudents.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvStudents.Font = new System.Drawing.Font("Roboto", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.dgvStudents.Location = new System.Drawing.Point(12, 125);
+            this.dgvStudents.Name = "dgvStudents";
+            this.dgvStudents.ReadOnly = true;
+            this.dgvStudents.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvStudents.Size = new System.Drawing.Size(460, 300);
+            this.dgvStudents.TabIndex = 1;
             // 
-            // cmbPaymentMethod
+            // btnPaymentHistory
             // 
-            this.cmbPaymentMethod.FormattingEnabled = true;
-            this.cmbPaymentMethod.Items.AddRange(new object[] {
-            "Cash",
-            "Check",
-            "Credit Card",
-            "Bank Transfer"});
-            this.cmbPaymentMethod.Location = new System.Drawing.Point(150, 100);
-            this.cmbPaymentMethod.Name = "cmbPaymentMethod";
-            this.cmbPaymentMethod.Size = new System.Drawing.Size(200, 21);
-            this.cmbPaymentMethod.TabIndex = 2;
+            this.btnPaymentHistory.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(242)))), ((int)(((byte)(242)))));
+            this.btnPaymentHistory.Font = new System.Drawing.Font("Roboto", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.btnPaymentHistory.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.btnPaymentHistory.Location = new System.Drawing.Point(12, 431);
+            this.btnPaymentHistory.Name = "btnPaymentHistory";
+            this.btnPaymentHistory.Size = new System.Drawing.Size(150, 30);
+            this.btnPaymentHistory.TabIndex = 2;
+            this.btnPaymentHistory.Text = "Payment History";
+            this.btnPaymentHistory.UseVisualStyleBackColor = false;
+            this.btnPaymentHistory.Click += new System.EventHandler(this.btnPaymentHistory_Click);
             // 
-            // btnSave
+            // btnGeneratePayments
             // 
-            this.btnSave.Location = new System.Drawing.Point(80, 150);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(75, 23);
-            this.btnSave.TabIndex = 3;
-            this.btnSave.Text = "Save";
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.Location = new System.Drawing.Point(200, 150);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 4;
-            this.btnCancel.Text = "Cancel";
-            this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
-            // lblPaymentDate
-            // 
-            this.lblPaymentDate.AutoSize = true;
-            this.lblPaymentDate.Location = new System.Drawing.Point(50, 20);
-            this.lblPaymentDate.Name = "lblPaymentDate";
-            this.lblPaymentDate.Size = new System.Drawing.Size(74, 13);
-            this.lblPaymentDate.TabIndex = 5;
-            this.lblPaymentDate.Text = "Payment Date";
-            // 
-            // lblAmount
-            // 
-            this.lblAmount.AutoSize = true;
-            this.lblAmount.Location = new System.Drawing.Point(50, 60);
-            this.lblAmount.Name = "lblAmount";
-            this.lblAmount.Size = new System.Drawing.Size(43, 13);
-            this.lblAmount.TabIndex = 6;
-            this.lblAmount.Text = "Amount";
-            // 
-            // lblPaymentMethod
-            // 
-            this.lblPaymentMethod.AutoSize = true;
-            this.lblPaymentMethod.Location = new System.Drawing.Point(50, 100);
-            this.lblPaymentMethod.Name = "lblPaymentMethod";
-            this.lblPaymentMethod.Size = new System.Drawing.Size(87, 13);
-            this.lblPaymentMethod.TabIndex = 7;
-            this.lblPaymentMethod.Text = "Payment Method";
+            this.btnGeneratePayments.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(242)))), ((int)(((byte)(242)))));
+            this.btnGeneratePayments.Font = new System.Drawing.Font("Roboto", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.btnGeneratePayments.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.btnGeneratePayments.Location = new System.Drawing.Point(170, 431);
+            this.btnGeneratePayments.Name = "btnGeneratePayments";
+            this.btnGeneratePayments.Size = new System.Drawing.Size(150, 30);
+            this.btnGeneratePayments.TabIndex = 3;
+            this.btnGeneratePayments.Text = "Generate Payments";
+            this.btnGeneratePayments.UseVisualStyleBackColor = false;
+            this.btnGeneratePayments.Click += new System.EventHandler(this.btnGeneratePayments_Click);
             // 
             // PaymentForm
             // 
-            this.ClientSize = new System.Drawing.Size(400, 200);
-            this.Controls.Add(this.lblPaymentMethod);
-            this.Controls.Add(this.lblAmount);
-            this.Controls.Add(this.lblPaymentDate);
-            this.Controls.Add(this.btnCancel);
-            this.Controls.Add(this.btnSave);
-            this.Controls.Add(this.cmbPaymentMethod);
-            this.Controls.Add(this.txtAmount);
-            this.Controls.Add(this.dtpPaymentDate);
-            this.Icon = global::MDSoDv2.Properties.Resources.MDSoDv2_logo1; // Set the form icon
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(544, 503);
+            this.Controls.Add(this.txtSearch);
+            this.Controls.Add(this.dgvStudents);
+            this.Controls.Add(this.btnPaymentHistory);
+            this.Controls.Add(this.btnGeneratePayments);
             this.Name = "PaymentForm";
-            this.Text = "PaymentForm";
+            this.Text = "Payment Form";
+            ((System.ComponentModel.ISupportInitialize)(this.dgvStudents)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
-        private System.Windows.Forms.DateTimePicker dtpPaymentDate;
-        private System.Windows.Forms.TextBox txtAmount;
-        private System.Windows.Forms.ComboBox cmbPaymentMethod;
-        private System.Windows.Forms.Button btnSave;
-        private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.Label lblPaymentDate;
-        private System.Windows.Forms.Label lblAmount;
-        private System.Windows.Forms.Label lblPaymentMethod;
+        #endregion
+
+        private System.Windows.Forms.TextBox txtSearch;
+        private System.Windows.Forms.DataGridView dgvStudents;
+        private System.Windows.Forms.Button btnPaymentHistory;
+        private System.Windows.Forms.Button btnGeneratePayments;
     }
 }

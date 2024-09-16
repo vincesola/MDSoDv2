@@ -471,10 +471,20 @@ namespace MDSoDv2
                 }
 
                 // Update classes
-                dbHelper.DeleteClassesByStudentId(student.StudentID); // Clear existing classes first
-                foreach (var classItem in stagedClasses)
+                var existingClasses = dbHelper.GetClassesByStudentId(student.StudentID);
+
+                // Identify classes to be removed
+                var classesToRemove = existingClasses.Where(c => !stagedClasses.Any(sc => sc.ClassID == c.ClassID)).ToList();
+                foreach (var classToRemove in classesToRemove)
                 {
-                    dbHelper.AddStudentClass(student.StudentID, classItem.ClassID);
+                    dbHelper.RemoveStudentClass(student.StudentID, classToRemove.ClassID);
+                }
+
+                // Identify classes to be added
+                var classesToAdd = stagedClasses.Where(sc => !existingClasses.Any(c => c.ClassID == sc.ClassID)).ToList();
+                foreach (var classToAdd in classesToAdd)
+                {
+                    dbHelper.AddStudentClass(student.StudentID, classToAdd.ClassID);
                 }
 
                 this.DialogResult = DialogResult.OK;

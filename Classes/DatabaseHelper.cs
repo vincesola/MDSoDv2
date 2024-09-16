@@ -13,7 +13,7 @@ namespace MDSoDv2
 
     public class DatabaseHelper
     {
-        private string dbPath = "Data Source=MDSoDv2.db;Version=3;";
+        private readonly string dbPath = "Data Source=MDSoDv2.db;Version=3;";
 
         public DatabaseHelper()
         {
@@ -66,7 +66,9 @@ namespace MDSoDv2
                 string createSessionsTable = @"
                     CREATE TABLE IF NOT EXISTS Sessions (
                         SessionID INTEGER PRIMARY KEY AUTOINCREMENT,
-                        SessionName TEXT
+                        SessionName TEXT,
+                        StartDate TEXT,
+                        EndDate TEXT
                     );";
 
                 string createClassesTable = @"
@@ -105,6 +107,14 @@ namespace MDSoDv2
                         FOREIGN KEY(StudentID) REFERENCES Students(StudentID),
                         FOREIGN KEY(ClassID) REFERENCES Classes(ClassID)
                     );";
+                string createStudentPaymentTable = @"
+                    CREATE TABLE IF NOT EXISTS StudentPayments (
+                        PaymentID INTEGER PRIMARY KEY AUTOINCREMENT,
+                        StudentClassID INTEGER,
+                        PaymentDueDate TEXT,
+                        PaymentReceived BOOLEAN DEFAULT 0,
+                        FOREIGN KEY(StudentClassID) REFERENCES StudentClasses(StudentClassID)
+                    );";
 
                 ExecuteNonQuery(connection, createStudentsTable);
                 ExecuteNonQuery(connection, createParentsTable);
@@ -114,6 +124,7 @@ namespace MDSoDv2
                 ExecuteNonQuery(connection, createPaymentsTable);
                 ExecuteNonQuery(connection, createStudentClassesTable);
                 ExecuteNonQuery(connection, createConfigurationTable);
+                ExecuteNonQuery(connection, createStudentPaymentTable);
             }
         }
 
@@ -127,7 +138,7 @@ namespace MDSoDv2
 
         #endregion DB Creation
 
-        #region ConfiguartionTable
+        #region ConfigurationTable
 
         public void SetConfigurationValue(string key, string value)
         {
@@ -162,20 +173,19 @@ namespace MDSoDv2
                     }
                 }
             }
-            return null; // return null if key is not found
+            return null;
         }
 
         public static string EncryptString(string plainText, string passphrase)
         {
-            // Derive a 256-bit key from the passphrase using PBKDF2
             var key = new Rfc2898DeriveBytes(passphrase, Encoding.UTF8.GetBytes("your-salt-here"), 10000);
-            byte[] keyBytes = key.GetBytes(32); // 32 bytes = 256 bits
+            byte[] keyBytes = key.GetBytes(32);
 
-            byte[] iv = new byte[16]; // AES requires a 16-byte IV
+            byte[] iv = new byte[16];
             using (AesCryptoServiceProvider aesAlg = new AesCryptoServiceProvider())
             {
                 aesAlg.Key = keyBytes;
-                aesAlg.IV = iv; // Static IV for simplicity
+                aesAlg.IV = iv;
 
                 ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
 
@@ -195,11 +205,10 @@ namespace MDSoDv2
 
         public static string DecryptString(string cipherText, string passphrase)
         {
-            // Derive a 256-bit key from the passphrase using PBKDF2
             var key = new Rfc2898DeriveBytes(passphrase, Encoding.UTF8.GetBytes("your-salt-here"), 10000);
-            byte[] keyBytes = key.GetBytes(32); // 32 bytes = 256 bits
+            byte[] keyBytes = key.GetBytes(32);
 
-            byte[] iv = new byte[16]; // Same static IV as in encryption
+            byte[] iv = new byte[16];
             byte[] cipherBytes = Convert.FromBase64String(cipherText);
 
             using (AesCryptoServiceProvider aesAlg = new AesCryptoServiceProvider())
@@ -222,7 +231,7 @@ namespace MDSoDv2
             }
         }
 
-        #endregion ConfiguartionTable
+        #endregion ConfigurationTable
 
         #region Student Methods
 
@@ -233,7 +242,6 @@ namespace MDSoDv2
             {
                 connection.Open();
 
-                // Check if a student with the same FirstName, LastName, and DateOfBirth already exists
                 var checkQuery = "SELECT COUNT(*) FROM Students WHERE FirstName = @FirstName AND LastName = @LastName AND DateOfBirth = @DateOfBirth";
                 using (var checkCommand = new SQLiteCommand(checkQuery, connection))
                 {
@@ -248,7 +256,6 @@ namespace MDSoDv2
                     }
                 }
 
-                // Insert new student if no duplicates are found
                 var query = "INSERT INTO Students (FirstName, LastName, DateOfBirth, StreetAddress, City, State, ZipCode, PhoneNumber, FamilyEmail, Active) " +
                             "VALUES (@FirstName, @LastName, @DateOfBirth, @StreetAddress, @City, @State, @ZipCode, @PhoneNumber, @FamilyEmail, @Active); " +
                             "SELECT last_insert_rowid();";
@@ -311,13 +318,12 @@ namespace MDSoDv2
                             DateTime dob;
                             DateTime.TryParseExact(reader["DateOfBirth"].ToString(), "MM/dd/yyyy", null, System.Globalization.DateTimeStyles.None, out dob);
 
-                            // Safely handle Active column
                             bool isActive = false;
-                            if (reader["Active"] is long longValue) // If stored as INTEGER
+                            if (reader["Active"] is long longValue)
                             {
                                 isActive = longValue != 0;
                             }
-                            else if (reader["Active"] is bool boolValue) // If directly retrieved as bool
+                            else if (reader["Active"] is bool boolValue)
                             {
                                 isActive = boolValue;
                             }
@@ -327,7 +333,7 @@ namespace MDSoDv2
                                 StudentID = reader.GetInt32(0),
                                 FirstName = reader.GetString(1),
                                 LastName = reader.GetString(2),
-                                DateOfBirth = dob.ToString("MM/dd/yyyy"), // Store as string
+                                DateOfBirth = dob.ToString("MM/dd/yyyy"),
                                 StreetAddress = reader.GetString(4),
                                 City = reader.GetString(5),
                                 State = reader.GetString(6),
@@ -348,12 +354,68 @@ namespace MDSoDv2
             using (var connection = new SQLiteConnection(dbPath))
             {
                 connection.Open();
-                string query = "INSERT INTO StudentClasses (StudentID, ClassID) VALUES (@StudentID, @ClassID)";
+
+                string query = "INSERT INTO StudentClasses (StudentID, ClassID) VALUES (@StudentID, @ClassID); SELECT last_insert_rowid();";
                 using (var command = new SQLiteCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@StudentID", studentID);
                     command.Parameters.AddWithValue("@ClassID", classID);
-                    command.ExecuteNonQuery();
+
+                    int studentClassID = Convert.ToInt32(command.ExecuteScalar());
+
+                    GenerateExpectedPayments(studentClassID);
+                }
+            }
+        }
+
+        public void RemoveStudentClass(int studentID, int classID)
+        {
+            using (var connection = new SQLiteConnection(dbPath))
+            {
+                connection.Open();
+                using (var transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        string getStudentClassIdQuery = "SELECT StudentClassID FROM StudentClasses WHERE StudentID = @StudentID AND ClassID = @ClassID";
+                        int studentClassID = 0;
+
+                        using (var getIdCommand = new SQLiteCommand(getStudentClassIdQuery, connection))
+                        {
+                            getIdCommand.Parameters.AddWithValue("@StudentID", studentID);
+                            getIdCommand.Parameters.AddWithValue("@ClassID", classID);
+
+                            var result = getIdCommand.ExecuteScalar();
+                            if (result != null)
+                            {
+                                studentClassID = Convert.ToInt32(result);
+                            }
+                        }
+
+                        if (studentClassID > 0)
+                        {
+                            string deletePaymentsQuery = "DELETE FROM StudentPayments WHERE StudentClassID = @StudentClassID AND PaymentReceived = 0";
+                            using (var deletePaymentsCommand = new SQLiteCommand(deletePaymentsQuery, connection))
+                            {
+                                deletePaymentsCommand.Parameters.AddWithValue("@StudentClassID", studentClassID);
+                                deletePaymentsCommand.ExecuteNonQuery();
+                            }
+
+                            string deleteStudentClassQuery = "DELETE FROM StudentClasses WHERE StudentClassID = @StudentClassID";
+                            using (var deleteStudentClassCommand = new SQLiteCommand(deleteStudentClassQuery, connection))
+                            {
+                                deleteStudentClassCommand.Parameters.AddWithValue("@StudentClassID", studentClassID);
+                                deleteStudentClassCommand.ExecuteNonQuery();
+                            }
+                        }
+
+                        transaction.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
             }
         }
@@ -616,7 +678,6 @@ namespace MDSoDv2
             using (var connection = new SQLiteConnection(dbPath))
             {
                 connection.Open();
-                // Updated query with a join between Classes and Sessions to get the SessionName
                 var query = @"
             SELECT c.DayOfWeek, c.Time, c.ClassName, c.ClassLocation, s.SessionName,
                    c.Teachers, c.ClassID
@@ -632,7 +693,7 @@ namespace MDSoDv2
                     WHEN 'Saturday' THEN 6
                     WHEN 'Sunday' THEN 7
                 END,
-                TIME(c.Time)";  // Use SQLite's TIME function to correctly order the time values
+                TIME(c.Time)";
 
                 using (var adapter = new SQLiteDataAdapter(query, connection))
                 {
@@ -683,14 +744,13 @@ namespace MDSoDv2
             {
                 connection.Open();
 
-                // Updated query to include ClassLocation, DayOfWeek, and Time
                 var query = @"
         SELECT c.ClassID, c.ClassName, c.ClassLocation, c.DayOfWeek, c.Time
         FROM Classes c
         JOIN StudentClasses sc ON sc.ClassID = c.ClassID
         WHERE c.SessionID = @SessionID
         GROUP BY c.ClassID, c.ClassName, c.ClassLocation, c.DayOfWeek, c.Time
-        HAVING COUNT(sc.StudentID) > 0"; // Ensures only classes with students are selected
+        HAVING COUNT(sc.StudentID) > 0";
 
                 using (var command = new SQLiteCommand(query, connection))
                 {
@@ -704,9 +764,9 @@ namespace MDSoDv2
                             {
                                 ClassID = reader.GetInt32(0),
                                 ClassName = reader.GetString(1),
-                                ClassLocation = reader.GetString(2), // Retrieve ClassLocation
-                                DayOfWeek = reader.GetString(3),      // Retrieve DayOfWeek
-                                Time = reader.GetString(4)            // Retrieve Time
+                                ClassLocation = reader.GetString(2),
+                                DayOfWeek = reader.GetString(3),
+                                Time = reader.GetString(4)
                             };
                             classes.Add(classObj);
                         }
@@ -855,7 +915,6 @@ namespace MDSoDv2
             {
                 connection.Open();
 
-                // Check if the teacher already exists
                 var checkQuery = "SELECT COUNT(*) FROM Teachers WHERE TeacherName = @TeacherName";
                 using (var checkCommand = new SQLiteCommand(checkQuery, connection))
                 {
@@ -1029,6 +1088,119 @@ namespace MDSoDv2
             return dataTable;
         }
 
+        public void GenerateExpectedPayments(int studentClassId)
+        {
+            using (var connection = new SQLiteConnection(dbPath))
+            {
+                connection.Open();
+
+                string query = @"
+            SELECT sc.StudentClassID, c.SessionID, s.SessionName, c.ClassName, s.StartDate, s.EndDate
+            FROM StudentClasses sc
+            JOIN Classes c ON sc.ClassID = c.ClassID
+            JOIN Sessions s ON c.SessionID = s.SessionID";
+
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int studentClassID = reader.GetInt32(0);
+                            DateTime startDate = DateTime.Parse(reader["StartDate"].ToString());
+                            DateTime endDate = DateTime.Parse(reader["EndDate"].ToString());
+
+                            List<DateTime> paymentDueDates = new List<DateTime>();
+
+                            paymentDueDates.Add(startDate);
+
+                            DateTime paymentDueDate = new DateTime(startDate.Year, startDate.Month, 1).AddMonths(1);
+                            while (paymentDueDate <= endDate)
+                            {
+                                paymentDueDates.Add(paymentDueDate);
+                                paymentDueDate = paymentDueDate.AddMonths(1);
+                            }
+
+                            foreach (var date in paymentDueDates)
+                            {
+                                if (!PaymentExists(studentClassID, date))
+                                {
+                                    string insertQuery = "INSERT INTO StudentPayments (StudentClassID, PaymentDueDate, PaymentReceived) VALUES (@StudentClassID, @PaymentDueDate, 0)";
+                                    using (var insertCommand = new SQLiteCommand(insertQuery, connection))
+                                    {
+                                        insertCommand.Parameters.AddWithValue("@StudentClassID", studentClassID);
+                                        insertCommand.Parameters.AddWithValue("@PaymentDueDate", date);
+                                        insertCommand.ExecuteNonQuery();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Helper method to check if a payment record exists
+        public bool PaymentExists(int studentClassID, DateTime paymentDueDate)
+        {
+            using (var connection = new SQLiteConnection(dbPath))
+            {
+                connection.Open();
+                var query = "SELECT COUNT(*) FROM StudentPayments WHERE StudentClassID = @StudentClassID AND PaymentDueDate = @PaymentDueDate";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@StudentClassID", studentClassID);
+                    command.Parameters.AddWithValue("@PaymentDueDate", paymentDueDate);
+                    var count = Convert.ToInt32(command.ExecuteScalar());
+                    return count > 0;
+                }
+            }
+        }
+
+        public void MarkPaymentAsReceived(int paymentId)
+        {
+            using (var connection = new SQLiteConnection(dbPath))
+            {
+                connection.Open();
+                string query = "UPDATE StudentPayments SET PaymentReceived = 1 WHERE PaymentID = @PaymentID";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@PaymentID", paymentId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public List<PaymentRecord> GetPaymentsForStudentClass(int studentClassId)
+        {
+            var paymentRecords = new List<PaymentRecord>();
+
+            using (var connection = new SQLiteConnection(dbPath))
+            {
+                connection.Open();
+                string query = "SELECT * FROM StudentPayments WHERE StudentClassID = @StudentClassID ORDER BY PaymentDueDate";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@StudentClassID", studentClassId);
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            paymentRecords.Add(new PaymentRecord
+                            {
+                                PaymentID = reader.GetInt32(0),
+                                StudentClassID = reader.GetInt32(1),
+                                PaymentDueDate = DateTime.Parse(reader["PaymentDueDate"].ToString()),
+                                PaymentReceived = reader.GetBoolean(3)
+                            });
+                        }
+                    }
+                }
+            }
+
+            return paymentRecords;
+        }
+
         #endregion Payment Methods
 
         #region Parent Methods
@@ -1039,7 +1211,7 @@ namespace MDSoDv2
             {
                 connection.Open();
                 var query = @"INSERT INTO Parents (StudentID, FirstName, LastName, PhoneNumber, Email, Relationship)
-                      VALUES (@StudentID, @FirstName, @LastName, @PhoneNumber, @Email, @Relationship)";
+                              VALUES (@StudentID, @FirstName, @LastName, @PhoneNumber, @Email, @Relationship)";
                 using (var command = new SQLiteCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@StudentID", parent.StudentID);
@@ -1073,10 +1245,10 @@ namespace MDSoDv2
             {
                 connection.Open();
                 var query = @"UPDATE Parents
-                      SET FirstName = @FirstName, LastName = @LastName,
-                          PhoneNumber = @PhoneNumber, Email = @Email,
-                          Relationship = @Relationship
-                      WHERE ParentID = @ParentID";
+                              SET FirstName = @FirstName, LastName = @LastName,
+                                  PhoneNumber = @PhoneNumber, Email = @Email,
+                                  Relationship = @Relationship
+                              WHERE ParentID = @ParentID";
                 using (var command = new SQLiteCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@FirstName", parent.FirstName);
@@ -1134,7 +1306,7 @@ namespace MDSoDv2
                 {
                     try
                     {
-                        // Column indices assuming the spreadsheet has a StudentID column
+                        int studentId = 0; // Initialize studentId with a default value.
                         int studentIdIndex = 0;
                         int firstNameIndex = 1;
                         int lastNameIndex = 2;
@@ -1147,15 +1319,12 @@ namespace MDSoDv2
                         int familyEmailIndex = 9;
                         int activeIndex = 10;
 
-                        // Check if the StudentID column is empty or null
                         string studentIdValue = row[studentIdIndex].ToString();
-                        int studentId = 0;
                         bool studentIdExists = !string.IsNullOrEmpty(studentIdValue) && int.TryParse(studentIdValue, out studentId);
 
-                        // Adjust indices if StudentID is missing
                         if (!studentIdExists)
                         {
-                            studentIdIndex = -1; // Not used, but conceptually marks it as "missing"
+                            studentIdIndex = -1;
                             firstNameIndex -= 1;
                             lastNameIndex -= 1;
                             dateOfBirthIndex -= 1;
@@ -1168,30 +1337,11 @@ namespace MDSoDv2
                             activeIndex -= 1;
                         }
 
-                        // Determine the active status
                         bool isActive = !string.IsNullOrEmpty(row[activeIndex].ToString()) && row[activeIndex].ToString().ToUpper() == "TRUE";
                         int activeValue = isActive ? 1 : 0;
 
-                        // For debugging: Show the mapping before import
-                        string debugInfo = $"Importing Student: \n" +
-                                           $"StudentID: {(studentIdExists ? studentId.ToString() : "New Entry")}\n" +
-                                           $"FirstName: {row[firstNameIndex]?.ToString() ?? "NULL"}\n" +
-                                           $"LastName: {row[lastNameIndex]?.ToString() ?? "NULL"}\n" +
-                                           $"DateOfBirth: {row[dateOfBirthIndex]?.ToString() ?? "NULL"}\n" +
-                                           $"StreetAddress: {row[streetAddressIndex]?.ToString() ?? "NULL"}\n" +
-                                           $"City: {row[cityIndex]?.ToString() ?? "NULL"}\n" +
-                                           $"State: {row[stateIndex]?.ToString() ?? "NULL"}\n" +
-                                           $"ZipCode: {row[zipCodeIndex]?.ToString() ?? "NULL"}\n" +
-                                           $"PhoneNumber: {row[phoneNumberIndex]?.ToString() ?? "NULL"}\n" +
-                                           $"FamilyEmail: {row[familyEmailIndex]?.ToString() ?? "NULL"}\n" +
-                                           $"Active: {activeValue}";
-                        Console.WriteLine(debugInfo);
-                        MessageBox.Show(debugInfo, "Import Debug Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                        // For new students (StudentID is empty or null)
                         if (!studentIdExists)
                         {
-                            // Insert new student
                             var insertQuery = "INSERT INTO Students (FirstName, LastName, DateOfBirth, StreetAddress, City, State, ZipCode, PhoneNumber, FamilyEmail, Active) VALUES (@FirstName, @LastName, @DateOfBirth, @StreetAddress, @City, @State, @ZipCode, @PhoneNumber, @FamilyEmail, @Active)";
                             using (var insertCommand = new SQLiteCommand(insertQuery, connection))
                             {
@@ -1210,11 +1360,10 @@ namespace MDSoDv2
                         }
                         else
                         {
-                            // Update existing student
                             var updateQuery = "UPDATE Students SET FirstName = @FirstName, LastName = @LastName, DateOfBirth = @DateOfBirth, StreetAddress = @StreetAddress, City = @City, State = @State, ZipCode = @ZipCode, PhoneNumber = @PhoneNumber, FamilyEmail = @FamilyEmail, Active = @Active WHERE StudentID = @StudentID";
                             using (var updateCommand = new SQLiteCommand(updateQuery, connection))
                             {
-                                updateCommand.Parameters.AddWithValue("@StudentID", studentId);
+                                updateCommand.Parameters.AddWithValue("@StudentID", studentId); // studentId is now guaranteed to be assigned.
                                 updateCommand.Parameters.AddWithValue("@FirstName", row[firstNameIndex] ?? DBNull.Value);
                                 updateCommand.Parameters.AddWithValue("@LastName", row[lastNameIndex] ?? DBNull.Value);
                                 updateCommand.Parameters.AddWithValue("@DateOfBirth", row[dateOfBirthIndex] ?? DBNull.Value);
@@ -1277,7 +1426,6 @@ namespace MDSoDv2
                         }
                         catch (SQLiteException ex) when (ex.ResultCode == SQLiteErrorCode.Constraint)
                         {
-                            // Handle duplicate teacher names here
                             Console.WriteLine($"Duplicate teacher name found: {row["TeacherName"]}");
                         }
                     }
@@ -1317,7 +1465,6 @@ namespace MDSoDv2
             {
                 connection.Open();
 
-                // Get unknowns from Students table
                 var studentQuery = "SELECT * FROM Students";
                 using (var studentCommand = new SQLiteCommand(studentQuery, connection))
                 {
@@ -1328,7 +1475,6 @@ namespace MDSoDv2
                             for (int i = 0; i < reader.FieldCount; i++)
                             {
                                 var fieldValue = reader.GetValue(i).ToString();
-                                // Use IndexOf for case-insensitive search
                                 if (fieldValue.IndexOf("Unknown", StringComparison.OrdinalIgnoreCase) >= 0)
                                 {
                                     unknownEntries.Add(new UnknownEntry
@@ -1344,7 +1490,6 @@ namespace MDSoDv2
                     }
                 }
 
-                // Get unknowns from Parents table
                 var parentQuery = "SELECT * FROM Parents";
                 using (var parentCommand = new SQLiteCommand(parentQuery, connection))
                 {
@@ -1355,7 +1500,6 @@ namespace MDSoDv2
                             for (int i = 0; i < reader.FieldCount; i++)
                             {
                                 var fieldValue = reader.GetValue(i).ToString();
-                                // Use IndexOf for case-insensitive search
                                 if (fieldValue.IndexOf("Unknown", StringComparison.OrdinalIgnoreCase) >= 0)
                                 {
                                     unknownEntries.Add(new UnknownEntry
@@ -1386,7 +1530,6 @@ namespace MDSoDv2
             using (var connection = new SQLiteConnection(dbPath))
             {
                 connection.Open();
-                // Query to get classes that have students
                 string query = @"
                     SELECT DISTINCT c.ClassID, c.ClassName
                     FROM Classes c
@@ -1413,7 +1556,6 @@ namespace MDSoDv2
             return classes;
         }
 
-        // Method to get students by class ID
         public List<Student> GetStudentsByClassId(int classId)
         {
             var students = new List<Student>();
@@ -1421,7 +1563,6 @@ namespace MDSoDv2
             using (var connection = new SQLiteConnection(dbPath))
             {
                 connection.Open();
-                // Query to get students by class ID
                 string query = @"
                     SELECT s.StudentID, s.FirstName, s.LastName
                     FROM Students s
@@ -1452,5 +1593,70 @@ namespace MDSoDv2
         }
 
         #endregion Reporting - ClassSheets
+
+        #region StudentClasses
+
+        public List<StudentClass> GetAllStudentClasses()
+        {
+            var studentClasses = new List<StudentClass>();
+            using (var connection = new SQLiteConnection(dbPath))
+            {
+                connection.Open();
+                string query = "SELECT * FROM StudentClasses";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            studentClasses.Add(new StudentClass
+                            {
+                                StudentClassID = reader.GetInt32(0),
+                                StudentID = reader.GetInt32(1),
+                                ClassID = reader.GetInt32(2)
+                            });
+                        }
+                    }
+                }
+            }
+            return studentClasses;
+        }
+
+        public List<PaymentRecord> GetPaymentsForStudent(int studentId)
+        {
+            var paymentRecords = new List<PaymentRecord>();
+
+            using (var connection = new SQLiteConnection(dbPath))
+            {
+                connection.Open();
+                string query = @"
+            SELECT sp.*
+            FROM StudentPayments sp
+            JOIN StudentClasses sc ON sp.StudentClassID = sc.StudentClassID
+            WHERE sc.StudentID = @StudentID
+            ORDER BY sp.PaymentDueDate";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@StudentID", studentId);
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            paymentRecords.Add(new PaymentRecord
+                            {
+                                PaymentID = reader.GetInt32(0),
+                                StudentClassID = reader.GetInt32(1),
+                                PaymentDueDate = DateTime.Parse(reader["PaymentDueDate"].ToString()),
+                                PaymentReceived = reader.GetBoolean(3)
+                            });
+                        }
+                    }
+                }
+            }
+
+            return paymentRecords;
+        }
+
+        #endregion StudentClasses
     }
 }
