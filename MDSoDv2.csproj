@@ -417,6 +417,9 @@
       <DependentUpon>TeacherForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Classes\WorksheetExtensions.cs" />
+    <EmbeddedResource Include="Forms\PaymentHistoryForm.resx">
+      <DependentUpon>PaymentHistoryForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -446,6 +449,8 @@
     <None Include="Resources\MDSoDv2-logo.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\green_check.png" />
+    <None Include="Resources\empty_box.png" />
     <Content Include="Resources\MDSoDv2-logo.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -463,6 +468,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\red_cross.png" />
     <Content Include="SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

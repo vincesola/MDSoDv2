@@ -319,6 +319,7 @@ namespace MDSoDv2
             RefreshClassGrid();
         }
 
+
         private bool ValidateStudentInputs()
         {
             bool isValid = true;
@@ -363,8 +364,15 @@ namespace MDSoDv2
             dgvClasses.DataSource = null;
             dgvClasses.DataSource = stagedClasses;
             dgvClasses.Columns["ClassID"].Visible = false;
-            dgvClasses.Columns["SessionID"].Visible = false; // Hide session ID, make sure SessionName is displayed
+            dgvClasses.Columns["SessionID"].Visible = false; // Hide session ID, ensure SessionName is displayed
+
+            // Hide StudentClassID column
+            if (dgvClasses.Columns.Contains("StudentClassID"))
+            {
+                dgvClasses.Columns["StudentClassID"].Visible = false;
+            }
         }
+
 
         private void btnAddParent_Click(object sender, EventArgs e)
         {
@@ -474,14 +482,14 @@ namespace MDSoDv2
                 var existingClasses = dbHelper.GetClassesByStudentId(student.StudentID);
 
                 // Identify classes to be removed
-                var classesToRemove = existingClasses.Where(c => !stagedClasses.Any(sc => sc.ClassID == c.ClassID)).ToList();
+                var classesToRemove = existingClasses.Where(c => !stagedClasses.Any(sc => sc.StudentClassID == c.StudentClassID)).ToList();
                 foreach (var classToRemove in classesToRemove)
                 {
                     dbHelper.RemoveStudentClass(student.StudentID, classToRemove.ClassID);
                 }
 
                 // Identify classes to be added
-                var classesToAdd = stagedClasses.Where(sc => !existingClasses.Any(c => c.ClassID == sc.ClassID)).ToList();
+                var classesToAdd = stagedClasses.Where(sc => !existingClasses.Any(c => c.StudentClassID == sc.StudentClassID)).ToList();
                 foreach (var classToAdd in classesToAdd)
                 {
                     dbHelper.AddStudentClass(student.StudentID, classToAdd.ClassID);
@@ -491,6 +499,7 @@ namespace MDSoDv2
                 this.Close();
             }
         }
+
 
         private void CmbState_SelectedIndexChanged(object sender, EventArgs e)
         {

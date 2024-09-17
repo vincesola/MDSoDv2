@@ -111,9 +111,13 @@ namespace MDSoDv2
                     CREATE TABLE IF NOT EXISTS StudentPayments (
                         PaymentID INTEGER PRIMARY KEY AUTOINCREMENT,
                         StudentClassID INTEGER,
+                        StudentID INTEGER,
+                        ClassID INTEGER,
                         PaymentDueDate TEXT,
                         PaymentReceived BOOLEAN DEFAULT 0,
-                        FOREIGN KEY(StudentClassID) REFERENCES StudentClasses(StudentClassID)
+                        FOREIGN KEY(StudentClassID) REFERENCES StudentClasses(StudentClassID),
+                        FOREIGN KEY(StudentID) REFERENCES Students(StudentID),
+                        FOREIGN KEY(ClassID) REFERENCES Classes(ClassID)
                     );";
 
                 ExecuteNonQuery(connection, createStudentsTable);
@@ -520,11 +524,12 @@ namespace MDSoDv2
             using (var connection = new SQLiteConnection(dbPath))
             {
                 connection.Open();
-                string query = @"SELECT c.ClassID, c.ClassName, c.ClassLocation, c.DayOfWeek, c.Time, c.Teachers, s.SessionName
-                                 FROM Classes c
-                                 INNER JOIN StudentClasses sc ON c.ClassID = sc.ClassID
-                                 INNER JOIN Sessions s ON c.SessionID = s.SessionID
-                                 WHERE sc.StudentID = @StudentID";
+                string query = @"
+            SELECT sc.StudentClassID, c.ClassID, c.ClassName, c.ClassLocation, c.DayOfWeek, c.Time, c.Teachers, s.SessionName
+            FROM StudentClasses sc
+            INNER JOIN Classes c ON sc.ClassID = c.ClassID
+            INNER JOIN Sessions s ON c.SessionID = s.SessionID
+            WHERE sc.StudentID = @StudentID";
 
                 using (var command = new SQLiteCommand(query, connection))
                 {
@@ -536,13 +541,15 @@ namespace MDSoDv2
                         {
                             classes.Add(new Class
                             {
-                                ClassID = reader.GetInt32(0),
-                                ClassName = reader.GetString(1),
-                                ClassLocation = reader.GetString(2),
-                                DayOfWeek = reader.GetString(3),
-                                Time = reader.GetString(4),
-                                Teachers = reader.GetString(5),
-                                SessionName = reader.GetString(6)
+                                // Modify the Class model to include StudentClassID
+                                StudentClassID = reader.GetInt32(0),
+                                ClassID = reader.GetInt32(1),
+                                ClassName = reader.GetString(2),
+                                ClassLocation = reader.GetString(3),
+                                DayOfWeek = reader.GetString(4),
+                                Time = reader.GetString(5),
+                                Teachers = reader.GetString(6),
+                                SessionName = reader.GetString(7)
                             });
                         }
                     }
@@ -550,6 +557,7 @@ namespace MDSoDv2
             }
             return classes;
         }
+
 
         #endregion Student Methods
 
@@ -1094,19 +1102,24 @@ namespace MDSoDv2
             {
                 connection.Open();
 
+                // Updated query to include StudentID and ClassID
                 string query = @"
-            SELECT sc.StudentClassID, c.SessionID, s.SessionName, c.ClassName, s.StartDate, s.EndDate
+            SELECT sc.StudentClassID, sc.StudentID, c.ClassID, s.SessionID, s.SessionName, c.ClassName, s.StartDate, s.EndDate
             FROM StudentClasses sc
             JOIN Classes c ON sc.ClassID = c.ClassID
-            JOIN Sessions s ON c.SessionID = s.SessionID";
+            JOIN Sessions s ON c.SessionID = s.SessionID
+            WHERE sc.StudentClassID = @StudentClassID";  // Add a WHERE clause to filter by the given studentClassId
 
                 using (var command = new SQLiteCommand(query, connection))
                 {
+                    command.Parameters.AddWithValue("@StudentClassID", studentClassId); // Use the provided studentClassId to filter
                     using (var reader = command.ExecuteReader())
                     {
                         while (reader.Read())
                         {
                             int studentClassID = reader.GetInt32(0);
+                            int studentID = reader.GetInt32(1); // Retrieve StudentID
+                            int classID = reader.GetInt32(2);   // Retrieve ClassID
                             DateTime startDate = DateTime.Parse(reader["StartDate"].ToString());
                             DateTime endDate = DateTime.Parse(reader["EndDate"].ToString());
 
@@ -1123,12 +1136,16 @@ namespace MDSoDv2
 
                             foreach (var date in paymentDueDates)
                             {
+                                // Check if the payment record already exists
                                 if (!PaymentExists(studentClassID, date))
                                 {
-                                    string insertQuery = "INSERT INTO StudentPayments (StudentClassID, PaymentDueDate, PaymentReceived) VALUES (@StudentClassID, @PaymentDueDate, 0)";
+                                    // Updated insert query to include StudentID and ClassID
+                                    string insertQuery = "INSERT INTO StudentPayments (StudentClassID, StudentID, ClassID, PaymentDueDate, PaymentReceived) VALUES (@StudentClassID, @StudentID, @ClassID, @PaymentDueDate, 0)";
                                     using (var insertCommand = new SQLiteCommand(insertQuery, connection))
                                     {
                                         insertCommand.Parameters.AddWithValue("@StudentClassID", studentClassID);
+                                        insertCommand.Parameters.AddWithValue("@StudentID", studentID);  // Add StudentID
+                                        insertCommand.Parameters.AddWithValue("@ClassID", classID);      // Add ClassID
                                         insertCommand.Parameters.AddWithValue("@PaymentDueDate", date);
                                         insertCommand.ExecuteNonQuery();
                                     }
@@ -1139,6 +1156,7 @@ namespace MDSoDv2
                 }
             }
         }
+
 
         // Helper method to check if a payment record exists
         public bool PaymentExists(int studentClassID, DateTime paymentDueDate)
@@ -1178,7 +1196,12 @@ namespace MDSoDv2
             using (var connection = new SQLiteConnection(dbPath))
             {
                 connection.Open();
-                string query = "SELECT * FROM StudentPayments WHERE StudentClassID = @StudentClassID ORDER BY PaymentDueDate";
+                string query = @"
+            SELECT PaymentID, StudentClassID, StudentID, ClassID, PaymentDueDate, PaymentReceived 
+            FROM StudentPayments 
+            WHERE StudentClassID = @StudentClassID 
+            ORDER BY PaymentDueDate";
+
                 using (var command = new SQLiteCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@StudentClassID", studentClassId);
@@ -1190,8 +1213,10 @@ namespace MDSoDv2
                             {
                                 PaymentID = reader.GetInt32(0),
                                 StudentClassID = reader.GetInt32(1),
+                                StudentID = reader.GetInt32(2), // New column
+                                ClassID = reader.GetInt32(3),   // New column
                                 PaymentDueDate = DateTime.Parse(reader["PaymentDueDate"].ToString()),
-                                PaymentReceived = reader.GetBoolean(3)
+                                PaymentReceived = reader.GetBoolean(5)
                             });
                         }
                     }
@@ -1200,6 +1225,7 @@ namespace MDSoDv2
 
             return paymentRecords;
         }
+
 
         #endregion Payment Methods
 
