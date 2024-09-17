@@ -558,7 +558,6 @@ namespace MDSoDv2
             return classes;
         }
 
-
         #endregion Student Methods
 
         #region Class Methods
@@ -1157,7 +1156,6 @@ namespace MDSoDv2
             }
         }
 
-
         // Helper method to check if a payment record exists
         public bool PaymentExists(int studentClassID, DateTime paymentDueDate)
         {
@@ -1197,9 +1195,9 @@ namespace MDSoDv2
             {
                 connection.Open();
                 string query = @"
-            SELECT PaymentID, StudentClassID, StudentID, ClassID, PaymentDueDate, PaymentReceived 
-            FROM StudentPayments 
-            WHERE StudentClassID = @StudentClassID 
+            SELECT PaymentID, StudentClassID, StudentID, ClassID, PaymentDueDate, PaymentReceived
+            FROM StudentPayments
+            WHERE StudentClassID = @StudentClassID
             ORDER BY PaymentDueDate";
 
                 using (var command = new SQLiteCommand(query, connection))
@@ -1225,7 +1223,6 @@ namespace MDSoDv2
 
             return paymentRecords;
         }
-
 
         #endregion Payment Methods
 

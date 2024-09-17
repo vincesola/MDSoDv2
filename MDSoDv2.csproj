@@ -417,9 +417,6 @@
       <DependentUpon>TeacherForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Classes\WorksheetExtensions.cs" />
-    <EmbeddedResource Include="Forms\PaymentHistoryForm.resx">
-      <DependentUpon>PaymentHistoryForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

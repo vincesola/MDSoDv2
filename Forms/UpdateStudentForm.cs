@@ -319,7 +319,6 @@ namespace MDSoDv2
             RefreshClassGrid();
         }
 
-
         private bool ValidateStudentInputs()
         {
             bool isValid = true;
@@ -372,7 +371,6 @@ namespace MDSoDv2
                 dgvClasses.Columns["StudentClassID"].Visible = false;
             }
         }
-
 
         private void btnAddParent_Click(object sender, EventArgs e)
         {
@@ -499,7 +497,6 @@ namespace MDSoDv2
                 this.Close();
             }
         }
-
 
         private void CmbState_SelectedIndexChanged(object sender, EventArgs e)
         {

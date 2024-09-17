@@ -12,6 +12,7 @@ namespace MDSoDv2
 
         // Variables to store original size and positions
         private Size originalFormSize;
+
         private Rectangle originalTxtSearchBounds;
         private Rectangle originalDgvStudentsBounds;
         private Rectangle originalBtnPaymentHistoryBounds;

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace MDSoDv2
@@ -42,7 +40,6 @@ namespace MDSoDv2
 
             LoadPaymentHistory();
         }
-
 
         private void PaymentHistoryForm_Load(object sender, EventArgs e)
         {
@@ -138,8 +135,6 @@ namespace MDSoDv2
                 flowPanel.Controls.Add(classPanel);
             }
         }
-
-
 
         private Control GetPaymentControl(PaymentRecord paymentRecord)
         {
