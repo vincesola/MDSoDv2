@@ -802,6 +802,39 @@ namespace MDSoDv2
 
         #region Session Methods
 
+        public Session GetSessionByID(int sessionId)
+        {
+            using (var connection = new SQLiteConnection(dbPath))
+            {
+                connection.Open();
+                string query = "SELECT * FROM Sessions WHERE SessionID = @SessionID";
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@SessionID", sessionId);
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new Session
+                            {
+                                SessionID = reader.GetInt32(0),
+                                SessionName = reader.GetString(1),
+                                StartDate = DateTime.TryParse(reader.GetString(2), out DateTime startDate)
+                                    ? startDate
+                                    : throw new FormatException("Invalid StartDate format."),
+                                EndDate = DateTime.TryParse(reader.GetString(3), out DateTime endDate)
+                                    ? endDate
+                                    : throw new FormatException("Invalid EndDate format.")
+                            };
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+
+
         public List<Session> GetAllSessions()
         {
             var sessions = new List<Session>();

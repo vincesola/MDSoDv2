@@ -443,11 +443,17 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\MDSoDv2-logo.png" />
+    <None Include="Resources\MDSoDv2-logo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\green_check.png" />
-    <None Include="Resources\empty_box.png" />
+    <None Include="Resources\green_check.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\empty_box.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <Content Include="Resources\MDSoDv2-logo.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

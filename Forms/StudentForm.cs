@@ -87,7 +87,6 @@ namespace MDSoDv2
                 ? dbHelper.GetAllStudentsDataTable()
                 : dbHelper.GetActiveStudentsDataTable();
 
-            // Check if data is retrieved
             if (studentsTable != null && studentsTable.Rows.Count > 0)
             {
                 dgvStudents.DataSource = studentsTable;
@@ -95,6 +94,7 @@ namespace MDSoDv2
             }
             else
             {
+                dgvStudents.DataSource = null; // Clear the grid if no data is found
                 MessageBox.Show("No students found.", "Data Load", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
@@ -140,6 +140,7 @@ namespace MDSoDv2
         private void chkSearchAllStudents_CheckedChanged(object sender, EventArgs e)
         {
             LoadStudents();
+            SearchStudents(); // Update search results when checkbox changes
         }
 
         private void SearchStudents()
@@ -149,11 +150,26 @@ namespace MDSoDv2
                 ? dbHelper.GetAllStudentsDataTable()
                 : dbHelper.GetActiveStudentsDataTable();
 
-            var filteredRows = studentsTable.AsEnumerable()
-                .Where(row => row.Field<string>("FirstName").ToLower().Contains(searchTerm) ||
-                              row.Field<string>("LastName").ToLower().Contains(searchTerm));
-            dgvStudents.DataSource = filteredRows.CopyToDataTable();
-            dgvStudents.Columns["StudentID"].Visible = false; // Hide the StudentID column
+            if (studentsTable != null && studentsTable.Rows.Count > 0)
+            {
+                var filteredRows = studentsTable.AsEnumerable()
+                    .Where(row => row.Field<string>("FirstName").ToLower().Contains(searchTerm) ||
+                                  row.Field<string>("LastName").ToLower().Contains(searchTerm));
+
+                if (filteredRows.Any())
+                {
+                    dgvStudents.DataSource = filteredRows.CopyToDataTable();
+                }
+                else
+                {
+                    dgvStudents.DataSource = studentsTable.Clone(); // Show empty table with same structure
+                }
+                dgvStudents.Columns["StudentID"].Visible = false; // Hide the StudentID column
+            }
+            else
+            {
+                dgvStudents.DataSource = null; // Clear the grid if no data is found
+            }
         }
 
         private void btnAddStudent_Click(object sender, EventArgs e)
@@ -193,6 +209,7 @@ namespace MDSoDv2
                 {
                     dbHelper.DeleteStudent(selectedStudentId);
                     LoadStudents(); // Refresh the student list after deletion
+                    selectedStudentId = -1; // Reset the selected student ID
                 }
             }
             else
