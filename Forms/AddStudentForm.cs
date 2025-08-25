@@ -435,11 +435,11 @@ namespace MDSoDv2
                     // Add the new student to the database and get the generated StudentID
                     int studentID = dbHelper.AddStudent(NewStudent);
 
-                    // Add staged parents to the database
+                    // Add staged parents to the database and associate with the student
                     foreach (var parent in stagedParents)
                     {
                         parent.StudentID = studentID; // Assign the generated StudentID
-                        dbHelper.AddParent(parent);
+                        dbHelper.AddParent(parent);  // Adds parent and creates association
                     }
 
                     // Associate staged classes with the student
@@ -495,11 +495,11 @@ namespace MDSoDv2
                     // Add the new student to the database and get the generated StudentID
                     int studentID = dbHelper.AddStudent(NewStudent);
 
-                    // Add staged parents to the database
+                    // Add staged parents to the database and associate with the student
                     foreach (var parent in stagedParents)
                     {
                         parent.StudentID = studentID; // Assign the generated StudentID
-                        dbHelper.AddParent(parent);
+                        dbHelper.AddParent(parent);  // Adds parent and creates association
                     }
 
                     // Associate staged classes with the student
@@ -529,6 +529,7 @@ namespace MDSoDv2
                                 MessageBoxIcon.Error);
             }
         }
+
 
         private bool ValidateStudentInputs()
         {

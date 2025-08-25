@@ -39,9 +39,9 @@ namespace MDSoDv2
                 string createStudentsTable = @"
                     CREATE TABLE IF NOT EXISTS Students (
                         StudentID INTEGER PRIMARY KEY AUTOINCREMENT,
-                        FirstName TEXT,
-                        LastName TEXT,
-                        DateOfBirth TEXT,
+                        FirstName TEXT NOT NULL,
+                        LastName TEXT NOT NULL,
+                        DateOfBirth TEXT NOT NULL,
                         StreetAddress TEXT,
                         City TEXT,
                         State TEXT,
@@ -54,13 +54,20 @@ namespace MDSoDv2
                 string createParentsTable = @"
                     CREATE TABLE IF NOT EXISTS Parents (
                         ParentID INTEGER PRIMARY KEY AUTOINCREMENT,
-                        StudentID INTEGER,
-                        FirstName TEXT,
-                        LastName TEXT,
+                        FirstName TEXT NOT NULL,
+                        LastName TEXT NOT NULL,
                         PhoneNumber TEXT,
                         Email TEXT,
-                        Relationship TEXT,
-                        FOREIGN KEY(StudentID) REFERENCES Students(StudentID)
+                        Relationship TEXT
+                    );";
+
+                string createStudentParentTable = @"
+                    CREATE TABLE IF NOT EXISTS StudentParent (
+                        StudentParentID INTEGER PRIMARY KEY AUTOINCREMENT,
+                        StudentID INTEGER NOT NULL,
+                        ParentID INTEGER NOT NULL,
+                        FOREIGN KEY(StudentID) REFERENCES Students(StudentID) ON DELETE CASCADE,
+                        FOREIGN KEY(ParentID) REFERENCES Parents(ParentID) ON DELETE CASCADE
                     );";
 
                 string createSessionsTable = @"
@@ -122,6 +129,7 @@ namespace MDSoDv2
 
                 ExecuteNonQuery(connection, createStudentsTable);
                 ExecuteNonQuery(connection, createParentsTable);
+                ExecuteNonQuery(connection, createStudentParentTable);
                 ExecuteNonQuery(connection, createSessionsTable);
                 ExecuteNonQuery(connection, createClassesTable);
                 ExecuteNonQuery(connection, createTeachersTable);
@@ -797,6 +805,42 @@ namespace MDSoDv2
                 }
             }
         }
+        public DataTable GetClassesBySessionIdDataTable(int sessionId)
+        {
+            var dt = new DataTable();
+            using (var connection = new SQLiteConnection(dbPath))
+            {
+                connection.Open();
+                const string sql = @"
+            SELECT 
+                c.DayOfWeek,
+                c.Time,
+                c.ClassName,
+                c.ClassLocation,
+                s.SessionName,
+                c.Teachers,
+                c.ClassID
+            FROM Classes c
+            JOIN Sessions s ON c.SessionID = s.SessionID
+            WHERE c.SessionID = @SessionID
+            ORDER BY
+                CASE c.DayOfWeek
+                    WHEN 'Monday' THEN 1 WHEN 'Tuesday' THEN 2 WHEN 'Wednesday' THEN 3
+                    WHEN 'Thursday' THEN 4 WHEN 'Friday' THEN 5 WHEN 'Saturday' THEN 6
+                    WHEN 'Sunday' THEN 7 END,
+                TIME(c.Time) ASC;";
+                using (var cmd = new SQLiteCommand(sql, connection))
+                {
+                    cmd.Parameters.AddWithValue("@SessionID", sessionId);
+                    using (var adapter = new SQLiteDataAdapter(cmd))
+                    {
+                        adapter.Fill(dt);
+                    }
+                }
+            }
+            return dt;
+        }
+
 
         #endregion Class Methods
 
@@ -862,18 +906,23 @@ namespace MDSoDv2
 
         public DataTable GetSessionsDataTable()
         {
-            var dataTable = new DataTable();
+            var dt = new DataTable();
             using (var connection = new SQLiteConnection(dbPath))
             {
                 connection.Open();
-                var query = "SELECT * FROM Sessions";
-                using (var adapter = new SQLiteDataAdapter(query, connection))
+                // Explicit columns + stable ordering
+                const string sql = @"
+            SELECT SessionID, SessionName, StartDate, EndDate
+            FROM Sessions
+            ORDER BY date(StartDate) ASC;";
+                using (var adapter = new SQLiteDataAdapter(sql, connection))
                 {
-                    adapter.Fill(dataTable);
+                    adapter.Fill(dt);
                 }
             }
-            return dataTable;
+            return dt;
         }
+
 
         public void DeleteSession(int sessionId)
         {
@@ -1261,23 +1310,45 @@ namespace MDSoDv2
 
         #region Parent Methods
 
-        public void AddParent(Parent parent)
+        public int AddParent(Parent parent)
         {
             using (var connection = new SQLiteConnection(dbPath))
             {
                 connection.Open();
-                var query = @"INSERT INTO Parents (StudentID, FirstName, LastName, PhoneNumber, Email, Relationship)
-                              VALUES (@StudentID, @FirstName, @LastName, @PhoneNumber, @Email, @Relationship)";
+
+                // Add parent to the Parents table
+                string query = @"
+            INSERT INTO Parents (FirstName, LastName, PhoneNumber, Email, Relationship) 
+            VALUES (@FirstName, @LastName, @PhoneNumber, @Email, @Relationship);
+            SELECT last_insert_rowid();";
+
+                int parentId;
                 using (var command = new SQLiteCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@StudentID", parent.StudentID);
                     command.Parameters.AddWithValue("@FirstName", parent.FirstName);
                     command.Parameters.AddWithValue("@LastName", parent.LastName);
                     command.Parameters.AddWithValue("@PhoneNumber", parent.PhoneNumber);
                     command.Parameters.AddWithValue("@Email", parent.Email);
                     command.Parameters.AddWithValue("@Relationship", parent.Relationship);
-                    command.ExecuteNonQuery();
+                    parentId = Convert.ToInt32(command.ExecuteScalar());
                 }
+
+                // If a StudentID is provided, create the relationship in the StudentParent table
+                if (parent.StudentID > 0)
+                {
+                    string studentParentQuery = @"
+                INSERT INTO StudentParent (StudentID, ParentID) 
+                VALUES (@StudentID, @ParentID);";
+
+                    using (var studentParentCommand = new SQLiteCommand(studentParentQuery, connection))
+                    {
+                        studentParentCommand.Parameters.AddWithValue("@StudentID", parent.StudentID);
+                        studentParentCommand.Parameters.AddWithValue("@ParentID", parentId);
+                        studentParentCommand.ExecuteNonQuery();
+                    }
+                }
+
+                return parentId; // Return the generated ParentID for additional use if needed
             }
         }
 

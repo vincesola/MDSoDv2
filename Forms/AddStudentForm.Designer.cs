@@ -43,6 +43,12 @@ namespace MDSoDv2
 
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.txtFirstName = new MaterialSkin.Controls.MaterialTextBox();
             this.txtLastName = new MaterialSkin.Controls.MaterialTextBox();
             this.txtDateOfBirth = new MaterialSkin.Controls.MaterialTextBox();
@@ -68,9 +74,11 @@ namespace MDSoDv2
             // txtFirstName
             // 
             this.txtFirstName.AnimateReadOnly = false;
+            this.txtFirstName.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(242)))), ((int)(((byte)(242)))));
             this.txtFirstName.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtFirstName.Depth = 0;
             this.txtFirstName.Font = new System.Drawing.Font("Roboto", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.txtFirstName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.txtFirstName.Hint = "First Name";
             this.txtFirstName.LeadingIcon = null;
             this.txtFirstName.Location = new System.Drawing.Point(20, 78);
@@ -88,9 +96,11 @@ namespace MDSoDv2
             // txtLastName
             // 
             this.txtLastName.AnimateReadOnly = false;
+            this.txtLastName.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(242)))), ((int)(((byte)(242)))));
             this.txtLastName.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtLastName.Depth = 0;
             this.txtLastName.Font = new System.Drawing.Font("Roboto", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.txtLastName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.txtLastName.Hint = "Last Name";
             this.txtLastName.LeadingIcon = null;
             this.txtLastName.Location = new System.Drawing.Point(20, 138);
@@ -108,9 +118,11 @@ namespace MDSoDv2
             // txtDateOfBirth
             // 
             this.txtDateOfBirth.AnimateReadOnly = false;
+            this.txtDateOfBirth.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(242)))), ((int)(((byte)(242)))));
             this.txtDateOfBirth.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtDateOfBirth.Depth = 0;
             this.txtDateOfBirth.Font = new System.Drawing.Font("Roboto", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.txtDateOfBirth.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.txtDateOfBirth.Hint = "Date Of Birth";
             this.txtDateOfBirth.LeadingIcon = null;
             this.txtDateOfBirth.Location = new System.Drawing.Point(20, 198);
@@ -128,9 +140,11 @@ namespace MDSoDv2
             // txtStreetAddress
             // 
             this.txtStreetAddress.AnimateReadOnly = false;
+            this.txtStreetAddress.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(242)))), ((int)(((byte)(242)))));
             this.txtStreetAddress.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtStreetAddress.Depth = 0;
             this.txtStreetAddress.Font = new System.Drawing.Font("Roboto", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.txtStreetAddress.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.txtStreetAddress.Hint = "Street Address";
             this.txtStreetAddress.LeadingIcon = null;
             this.txtStreetAddress.Location = new System.Drawing.Point(20, 258);
@@ -148,9 +162,11 @@ namespace MDSoDv2
             // txtCity
             // 
             this.txtCity.AnimateReadOnly = false;
+            this.txtCity.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(242)))), ((int)(((byte)(242)))));
             this.txtCity.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtCity.Depth = 0;
             this.txtCity.Font = new System.Drawing.Font("Roboto", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.txtCity.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.txtCity.Hint = "City";
             this.txtCity.LeadingIcon = null;
             this.txtCity.Location = new System.Drawing.Point(20, 318);
@@ -168,9 +184,11 @@ namespace MDSoDv2
             // txtZipCode
             // 
             this.txtZipCode.AnimateReadOnly = false;
+            this.txtZipCode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(242)))), ((int)(((byte)(242)))));
             this.txtZipCode.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtZipCode.Depth = 0;
             this.txtZipCode.Font = new System.Drawing.Font("Roboto", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.txtZipCode.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.txtZipCode.Hint = "Zip Code";
             this.txtZipCode.LeadingIcon = null;
             this.txtZipCode.Location = new System.Drawing.Point(20, 429);
@@ -188,9 +206,11 @@ namespace MDSoDv2
             // txtPhoneNumber
             // 
             this.txtPhoneNumber.AnimateReadOnly = false;
+            this.txtPhoneNumber.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(242)))), ((int)(((byte)(242)))));
             this.txtPhoneNumber.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtPhoneNumber.Depth = 0;
             this.txtPhoneNumber.Font = new System.Drawing.Font("Roboto", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.txtPhoneNumber.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.txtPhoneNumber.Hint = "Phone Number";
             this.txtPhoneNumber.LeadingIcon = null;
             this.txtPhoneNumber.Location = new System.Drawing.Point(20, 489);
@@ -208,9 +228,11 @@ namespace MDSoDv2
             // txtFamilyEmail
             // 
             this.txtFamilyEmail.AnimateReadOnly = false;
+            this.txtFamilyEmail.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(242)))), ((int)(((byte)(242)))));
             this.txtFamilyEmail.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtFamilyEmail.Depth = 0;
             this.txtFamilyEmail.Font = new System.Drawing.Font("Roboto", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.txtFamilyEmail.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.txtFamilyEmail.Hint = "Family Email";
             this.txtFamilyEmail.LeadingIcon = null;
             this.txtFamilyEmail.Location = new System.Drawing.Point(20, 549);
@@ -228,7 +250,9 @@ namespace MDSoDv2
             // chkActive
             // 
             this.chkActive.AutoSize = true;
+            this.chkActive.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(242)))), ((int)(((byte)(242)))));
             this.chkActive.Depth = 0;
+            this.chkActive.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.chkActive.Location = new System.Drawing.Point(23, 607);
             this.chkActive.Margin = new System.Windows.Forms.Padding(0);
             this.chkActive.MouseLocation = new System.Drawing.Point(-1, -1);
@@ -239,12 +263,15 @@ namespace MDSoDv2
             this.chkActive.Size = new System.Drawing.Size(78, 37);
             this.chkActive.TabIndex = 9;
             this.chkActive.Text = "Active";
+            this.chkActive.UseVisualStyleBackColor = false;
             // 
             // btnSave
             // 
             this.btnSave.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnSave.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(242)))), ((int)(((byte)(242)))));
             this.btnSave.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
             this.btnSave.Depth = 0;
+            this.btnSave.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.btnSave.HighEmphasis = true;
             this.btnSave.Icon = null;
             this.btnSave.Location = new System.Drawing.Point(20, 650);
@@ -252,38 +279,43 @@ namespace MDSoDv2
             this.btnSave.MouseState = MaterialSkin.MouseState.HOVER;
             this.btnSave.Name = "btnSave";
             this.btnSave.NoAccentTextColor = System.Drawing.Color.Empty;
-            this.btnSave.Size = new System.Drawing.Size(150, 36);
+            this.btnSave.Size = new System.Drawing.Size(140, 36);
             this.btnSave.TabIndex = 14;
             this.btnSave.Text = "Save And Close";
             this.btnSave.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
             this.btnSave.UseAccentColor = false;
+            this.btnSave.UseVisualStyleBackColor = false;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // btnSaveAndAddNew
             // 
             this.btnSaveAndAddNew.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnSaveAndAddNew.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(242)))), ((int)(((byte)(242)))));
             this.btnSaveAndAddNew.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
             this.btnSaveAndAddNew.Depth = 0;
+            this.btnSaveAndAddNew.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.btnSaveAndAddNew.HighEmphasis = true;
             this.btnSaveAndAddNew.Icon = null;
-            this.btnSaveAndAddNew.Location = new System.Drawing.Point(180, 650); // Place next to the first button
+            this.btnSaveAndAddNew.Location = new System.Drawing.Point(180, 650);
             this.btnSaveAndAddNew.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
             this.btnSaveAndAddNew.MouseState = MaterialSkin.MouseState.HOVER;
             this.btnSaveAndAddNew.Name = "btnSaveAndAddNew";
             this.btnSaveAndAddNew.NoAccentTextColor = System.Drawing.Color.Empty;
-            this.btnSaveAndAddNew.Size = new System.Drawing.Size(210, 36); // Adjust size to fit the text
+            this.btnSaveAndAddNew.Size = new System.Drawing.Size(228, 36);
             this.btnSaveAndAddNew.TabIndex = 15;
             this.btnSaveAndAddNew.Text = "Save and Add New Student";
             this.btnSaveAndAddNew.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
             this.btnSaveAndAddNew.UseAccentColor = false;
-            this.btnSaveAndAddNew.UseVisualStyleBackColor = true;
+            this.btnSaveAndAddNew.UseVisualStyleBackColor = false;
             this.btnSaveAndAddNew.Click += new System.EventHandler(this.btnSaveAndAddNew_Click);
             // 
             // btnAddParent
             // 
             this.btnAddParent.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnAddParent.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(242)))), ((int)(((byte)(242)))));
             this.btnAddParent.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
             this.btnAddParent.Depth = 0;
+            this.btnAddParent.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.btnAddParent.HighEmphasis = true;
             this.btnAddParent.Icon = null;
             this.btnAddParent.Location = new System.Drawing.Point(252, 318);
@@ -296,13 +328,16 @@ namespace MDSoDv2
             this.btnAddParent.Text = "Add Parent";
             this.btnAddParent.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
             this.btnAddParent.UseAccentColor = false;
+            this.btnAddParent.UseVisualStyleBackColor = false;
             this.btnAddParent.Click += new System.EventHandler(this.btnAddParent_Click);
             // 
             // btnRemoveParent
             // 
             this.btnRemoveParent.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnRemoveParent.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(242)))), ((int)(((byte)(242)))));
             this.btnRemoveParent.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
             this.btnRemoveParent.Depth = 0;
+            this.btnRemoveParent.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.btnRemoveParent.HighEmphasis = true;
             this.btnRemoveParent.Icon = null;
             this.btnRemoveParent.Location = new System.Drawing.Point(370, 318);
@@ -315,13 +350,16 @@ namespace MDSoDv2
             this.btnRemoveParent.Text = "Remove Parent";
             this.btnRemoveParent.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
             this.btnRemoveParent.UseAccentColor = false;
+            this.btnRemoveParent.UseVisualStyleBackColor = false;
             this.btnRemoveParent.Click += new System.EventHandler(this.btnRemoveParent_Click);
             // 
             // btnAddClass
             // 
             this.btnAddClass.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnAddClass.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(242)))), ((int)(((byte)(242)))));
             this.btnAddClass.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
             this.btnAddClass.Depth = 0;
+            this.btnAddClass.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.btnAddClass.HighEmphasis = true;
             this.btnAddClass.Icon = null;
             this.btnAddClass.Location = new System.Drawing.Point(252, 606);
@@ -334,13 +372,16 @@ namespace MDSoDv2
             this.btnAddClass.Text = "Add Class";
             this.btnAddClass.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
             this.btnAddClass.UseAccentColor = false;
+            this.btnAddClass.UseVisualStyleBackColor = false;
             this.btnAddClass.Click += new System.EventHandler(this.btnAddClass_Click);
             // 
             // btnRemoveClass
             // 
             this.btnRemoveClass.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnRemoveClass.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(242)))), ((int)(((byte)(242)))));
             this.btnRemoveClass.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
             this.btnRemoveClass.Depth = 0;
+            this.btnRemoveClass.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.btnRemoveClass.HighEmphasis = true;
             this.btnRemoveClass.Icon = null;
             this.btnRemoveClass.Location = new System.Drawing.Point(359, 606);
@@ -353,35 +394,42 @@ namespace MDSoDv2
             this.btnRemoveClass.Text = "Remove Class";
             this.btnRemoveClass.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
             this.btnRemoveClass.UseAccentColor = false;
+            this.btnRemoveClass.UseVisualStyleBackColor = false;
             this.btnRemoveClass.Click += new System.EventHandler(this.btnRemoveClass_Click);
             // 
             // dgvParents
             // 
             this.dgvParents.AllowUserToAddRows = false;
             this.dgvParents.AllowUserToDeleteRows = false;
-            this.dgvParents.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill; // Columns auto-size
-            this.dgvParents.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(51, 51, 76); // Header background
-            this.dgvParents.ColumnHeadersDefaultCellStyle.ForeColor = Color.White; // Header text color
-            this.dgvParents.ColumnHeadersDefaultCellStyle.Font = new Font("Roboto", 12F, FontStyle.Bold); // Custom font for headers
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            this.dgvParents.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            this.dgvParents.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvParents.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+            this.dgvParents.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(76)))));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvParents.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            this.dgvParents.ColumnHeadersHeight = 50;
             this.dgvParents.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            this.dgvParents.ColumnHeadersHeight = 50; // Set header height
-
-            this.dgvParents.EnableHeadersVisualStyles = false; // Allow custom header styles
-            this.dgvParents.DefaultCellStyle.BackColor = Color.White; // Default cell background
-            this.dgvParents.DefaultCellStyle.ForeColor = Color.Black; // Default cell text color
-            this.dgvParents.DefaultCellStyle.Font = new Font("Roboto", 10F); // Custom font for cells
-            this.dgvParents.DefaultCellStyle.SelectionBackColor = Color.FromArgb(197, 17, 98); // Fuchsia-like selection color
-            this.dgvParents.DefaultCellStyle.SelectionForeColor = Color.White; // Selection text color
-
-            this.dgvParents.GridColor = Color.Gray; // Gridline color
-            this.dgvParents.BorderStyle = BorderStyle.None; // Remove border for cleaner look
-            this.dgvParents.RowHeadersVisible = false; // Optionally hide row headers for a cleaner look
-
-            this.dgvParents.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(240, 240, 240); // Alternating row background color
-            this.dgvParents.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill; // Make columns fill the grid width
-            this.dgvParents.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells; // Auto-size rows
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(197)))), ((int)(((byte)(17)))), ((int)(((byte)(98)))));
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvParents.DefaultCellStyle = dataGridViewCellStyle3;
+            this.dgvParents.EnableHeadersVisualStyles = false;
+            this.dgvParents.Font = new System.Drawing.Font("Roboto", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.dgvParents.GridColor = System.Drawing.Color.Gray;
             this.dgvParents.Location = new System.Drawing.Point(252, 78);
             this.dgvParents.Name = "dgvParents";
+            this.dgvParents.RowHeadersVisible = false;
             this.dgvParents.Size = new System.Drawing.Size(694, 230);
             this.dgvParents.TabIndex = 16;
             // 
@@ -389,42 +437,48 @@ namespace MDSoDv2
             // 
             this.dgvClasses.AllowUserToAddRows = false;
             this.dgvClasses.AllowUserToDeleteRows = false;
-            this.dgvClasses.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill; // Columns auto-size
-            this.dgvClasses.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(51, 51, 76); // Header background
-            this.dgvClasses.ColumnHeadersDefaultCellStyle.ForeColor = Color.White; // Header text color
-            this.dgvClasses.ColumnHeadersDefaultCellStyle.Font = new Font("Roboto", 12F, FontStyle.Bold); // Custom font for headers
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            this.dgvClasses.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
+            this.dgvClasses.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvClasses.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+            this.dgvClasses.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(76)))));
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvClasses.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
+            this.dgvClasses.ColumnHeadersHeight = 50;
             this.dgvClasses.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            this.dgvClasses.ColumnHeadersHeight = 50; // Set header height
-
-            this.dgvClasses.EnableHeadersVisualStyles = false; // Allow custom header styles
-            this.dgvClasses.DefaultCellStyle.BackColor = Color.White; // Default cell background
-            this.dgvClasses.DefaultCellStyle.ForeColor = Color.Black; // Default cell text color
-            this.dgvClasses.DefaultCellStyle.Font = new Font("Roboto", 10F); // Custom font for cells
-            this.dgvClasses.DefaultCellStyle.SelectionBackColor = Color.FromArgb(197, 17, 98); // Fuchsia-like selection color
-            this.dgvClasses.DefaultCellStyle.SelectionForeColor = Color.White; // Selection text color
-
-            this.dgvClasses.GridColor = Color.Gray; // Gridline color
-            this.dgvClasses.BorderStyle = BorderStyle.None; // Remove border for cleaner look
-            this.dgvClasses.RowHeadersVisible = false; // Optionally hide row headers for a cleaner look
-
-            this.dgvClasses.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(240, 240, 240); // Alternating row background color
-            this.dgvClasses.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill; // Make columns fill the grid width
-            this.dgvClasses.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells; // Auto-size rows
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(197)))), ((int)(((byte)(17)))), ((int)(((byte)(98)))));
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvClasses.DefaultCellStyle = dataGridViewCellStyle6;
+            this.dgvClasses.EnableHeadersVisualStyles = false;
+            this.dgvClasses.Font = new System.Drawing.Font("Roboto", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.dgvClasses.GridColor = System.Drawing.Color.Gray;
             this.dgvClasses.Location = new System.Drawing.Point(252, 374);
             this.dgvClasses.Name = "dgvClasses";
+            this.dgvClasses.RowHeadersVisible = false;
             this.dgvClasses.Size = new System.Drawing.Size(694, 225);
             this.dgvClasses.TabIndex = 17;
             // 
             // cmbState
             // 
             this.cmbState.AutoResize = false;
-            this.cmbState.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.cmbState.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(242)))), ((int)(((byte)(242)))));
             this.cmbState.Depth = 0;
             this.cmbState.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
             this.cmbState.DropDownHeight = 174;
             this.cmbState.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbState.DropDownWidth = 121;
-            this.cmbState.Font = new System.Drawing.Font("Roboto Medium", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.cmbState.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.cmbState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.cmbState.IntegralHeight = false;
             this.cmbState.ItemHeight = 43;

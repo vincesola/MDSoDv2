@@ -14,9 +14,11 @@ namespace MDSoDv2
         private DatabaseHelper dbHelper;
         private bool ascending = true; // Sorting direction flag
 
+        // For session filter binding
+        private bool _sessionsLoaded = false;
+
         // Variables to store original form size and control bounds for resizing
         private Size originalFormSize;
-
         private Rectangle originalListViewClassesBounds;
         private Rectangle originalBtnAddSelectedClassesBounds;
 
@@ -25,6 +27,9 @@ namespace MDSoDv2
             InitializeComponent();
             dbHelper = new DatabaseHelper();
             InitializeClassListView();
+
+            // session combo change handler (control added in Designer)
+            this.cmbSessionFilter.SelectedIndexChanged += cmbSessionFilter_SelectedIndexChanged;
 
             // Set form's starting position near the parent form
             this.StartPosition = FormStartPosition.Manual;
@@ -38,7 +43,10 @@ namespace MDSoDv2
 
         private void AddClassForm_Load(object sender, EventArgs e)
         {
-            // Store original form size and control bounds for resizing logic
+            // Bind sessions and default the selection (session containing today, else next upcoming)
+            BindSessionsAndDefault();
+
+            // Once the list is filtered for the first time, capture "original" bounds for your resize logic
             originalFormSize = this.Size;
             originalListViewClassesBounds = listViewClasses.Bounds;
             originalBtnAddSelectedClassesBounds = btnAddSelectedClasses.Bounds;
@@ -46,134 +54,215 @@ namespace MDSoDv2
 
         private void AddClassForm_Resize(object sender, EventArgs e)
         {
-            // Resize each control based on the current form size
             ResizeControl(listViewClasses, originalListViewClassesBounds);
             ResizeControl(btnAddSelectedClasses, originalBtnAddSelectedClassesBounds);
         }
 
         private void ResizeControl(Control control, Rectangle originalBounds)
         {
-            // Calculate the resize ratio for width and height
             float xRatio = (float)this.Width / originalFormSize.Width;
             float yRatio = (float)this.Height / originalFormSize.Height;
 
-            // Calculate the new control bounds
             int newX = (int)(originalBounds.X * xRatio);
             int newY = (int)(originalBounds.Y * yRatio);
             int newWidth = (int)(originalBounds.Width * xRatio);
             int newHeight = (int)(originalBounds.Height * yRatio);
 
-            // Apply new bounds to the control
             control.Bounds = new Rectangle(newX, newY, newWidth, newHeight);
         }
 
         private void InitializeClassListView()
         {
-            // Clear any existing columns and items
+            // Columns/appearance
             listViewClasses.Clear();
-
-            // Set View to Details for columns to be visible
             listViewClasses.View = View.Details;
             listViewClasses.FullRowSelect = true;
-            listViewClasses.MultiSelect = true;  // Allow multi-select
+            listViewClasses.MultiSelect = true;
 
-            // Add columns
-            listViewClasses.Columns.Add("Day of Week", 100, HorizontalAlignment.Left);
+            listViewClasses.Columns.Add("Day of Week", 120, HorizontalAlignment.Left);
             listViewClasses.Columns.Add("Time", 100, HorizontalAlignment.Left);
-            listViewClasses.Columns.Add("Class Name", 100, HorizontalAlignment.Left);
-            listViewClasses.Columns.Add("Class Location", 100, HorizontalAlignment.Left);
-            listViewClasses.Columns.Add("Session Name", 100, HorizontalAlignment.Left);
-            listViewClasses.Columns.Add("Teachers", 100, HorizontalAlignment.Left);
+            listViewClasses.Columns.Add("Class Name", 220, HorizontalAlignment.Left);
+            listViewClasses.Columns.Add("Class Location", 140, HorizontalAlignment.Left);
+            listViewClasses.Columns.Add("Session Name", 160, HorizontalAlignment.Left);
+            listViewClasses.Columns.Add("Teachers", 160, HorizontalAlignment.Left);
 
-            // Fetch classes data
+            // Initial population (will be immediately replaced by session-filtered data on Load)
             var dataTable = dbHelper.GetClassesDataTable();
+            PopulateClassListView(dataTable);
 
-            // Populate list view with data
-            foreach (DataRow row in dataTable.Rows)
-            {
-                var classObj = new Class
-                {
-                    ClassID = Convert.ToInt32(row["ClassID"]),
-                    ClassName = row["ClassName"].ToString(),
-                    ClassLocation = row["ClassLocation"].ToString(),
-                    SessionName = row["SessionName"].ToString(),
-                    DayOfWeek = row["DayOfWeek"].ToString(),
-                    Time = row["Time"].ToString(),
-                    Teachers = row["Teachers"].ToString()
-                };
-
-                var listViewItem = new ListViewItem(classObj.DayOfWeek);
-                listViewItem.SubItems.Add(classObj.Time);
-                listViewItem.SubItems.Add(classObj.ClassName);
-                listViewItem.SubItems.Add(classObj.ClassLocation);
-                listViewItem.SubItems.Add(classObj.SessionName);
-                listViewItem.SubItems.Add(classObj.Teachers);
-
-                // Store the Class object in the Tag property of each ListViewItem
-                listViewItem.Tag = classObj;
-
-                listViewClasses.Items.Add(listViewItem);
-            }
-
-            // Auto-resize columns to fit content
-            foreach (ColumnHeader column in listViewClasses.Columns)
-            {
-                column.Width = -2;  // Auto-size based on content
-            }
-
-            // Adjust the form and list view size after populating the content
             AdjustFormSize();
+        }
+
+        private void PopulateClassListView(DataTable dataTable)
+        {
+            listViewClasses.BeginUpdate();
+            try
+            {
+                listViewClasses.Items.Clear();
+
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    var classObj = new Class
+                    {
+                        ClassID = Convert.ToInt32(row["ClassID"]),
+                        ClassName = row["ClassName"].ToString(),
+                        ClassLocation = row["ClassLocation"].ToString(),
+                        SessionName = row["SessionName"].ToString(),
+                        DayOfWeek = row["DayOfWeek"].ToString(),
+                        Time = row["Time"].ToString(),
+                        Teachers = row["Teachers"].ToString()
+                    };
+
+                    var listViewItem = new ListViewItem(classObj.DayOfWeek);
+                    listViewItem.SubItems.Add(classObj.Time);
+                    listViewItem.SubItems.Add(classObj.ClassName);
+                    listViewItem.SubItems.Add(classObj.ClassLocation);
+                    listViewItem.SubItems.Add(classObj.SessionName);
+                    listViewItem.SubItems.Add(classObj.Teachers);
+
+                    listViewItem.Tag = classObj;
+                    listViewClasses.Items.Add(listViewItem);
+                }
+
+                // Auto-size based on content once after load
+                foreach (ColumnHeader column in listViewClasses.Columns)
+                    column.Width = -2;
+            }
+            finally
+            {
+                listViewClasses.EndUpdate();
+            }
         }
 
         private void AdjustFormSize()
         {
-            // Manually set column widths based on expected content size
-            listViewClasses.Columns[0].Width = 250; // ClassName
-            listViewClasses.Columns[1].Width = 150; // ClassLocation
-            listViewClasses.Columns[2].Width = 180; // SessionName
-            listViewClasses.Columns[3].Width = 150; // DayOfWeek
-            listViewClasses.Columns[4].Width = 130;  // Time
-            listViewClasses.Columns[5].Width = 150; // Teachers
+            // Re-assert sensible widths after auto-size
+            listViewClasses.Columns[0].Width = 120; // Day of Week
+            listViewClasses.Columns[1].Width = 100; // Time
+            listViewClasses.Columns[2].Width = 220; // Class Name
+            listViewClasses.Columns[3].Width = 140; // Class Location
+            listViewClasses.Columns[4].Width = 160; // Session Name
+            listViewClasses.Columns[5].Width = 160; // Teachers
 
-            // Set ListView to a fixed width and height
-            listViewClasses.Width = listViewClasses.Columns.Cast<ColumnHeader>().Sum(c => c.Width) + SystemInformation.VerticalScrollBarWidth;
+            listViewClasses.Width = listViewClasses.Columns.Cast<ColumnHeader>().Sum(c => c.Width)
+                                      + SystemInformation.VerticalScrollBarWidth;
 
-            // Set ListView height manually (example: limit to 400 for vertical scrolling)
-            listViewClasses.Height = Math.Min(listViewClasses.Items.Count * listViewClasses.Items[0].Bounds.Height, 400);
-
-            // Adjust form size based on the ListView size
-            this.Width = listViewClasses.Width + 40;  // Add padding for the form width
-            this.Height = listViewClasses.Height + 150;  // Add padding for the form height (includes room for the button)
+            if (listViewClasses.Items.Count > 0)
+            {
+                int rowH = listViewClasses.Items[0].Bounds.Height;
+                listViewClasses.Height = Math.Min(listViewClasses.Items.Count * rowH, 400);
+            }
+            else
+            {
+                listViewClasses.Height = 200;
+            }
 
             // Position the button below the ListView aligned to the bottom left
-            btnAddSelectedClasses.Location = new Point(10, listViewClasses.Bottom + 10);  // Position button with some padding
-            btnAddSelectedClasses.BringToFront();  // Ensure the button is visible on top
+            btnAddSelectedClasses.Location = new Point(10, listViewClasses.Bottom + 10);
+            btnAddSelectedClasses.BringToFront();
+
+            // Adjust overall form size/padding
+            this.Width = Math.Max(this.Width, listViewClasses.Width + 40);
+            this.Height = Math.Max(this.Height, listViewClasses.Bottom + 80);
         }
 
         private void ListViewClasses_ColumnClick(object sender, ColumnClickEventArgs e)
         {
-            // Toggle sorting direction
             ascending = !ascending;
-
-            // Sort the ListView items based on the clicked column index
             listViewClasses.ListViewItemSorter = new ListViewItemComparer(e.Column, ascending);
             listViewClasses.Sort();
         }
 
         private void btnAddSelectedClasses_Click(object sender, EventArgs e)
         {
-            // Retrieve selected items and store them in SelectedClasses list
             foreach (ListViewItem item in listViewClasses.SelectedItems)
             {
                 var selectedClass = (Class)item.Tag;
                 if (!SelectedClasses.Any(c => c.ClassID == selectedClass.ClassID))
-                {
                     SelectedClasses.Add(selectedClass);
-                }
             }
 
             this.DialogResult = DialogResult.OK;
             this.Close();
+        }
+
+        // ---------- Session filter wiring ----------
+
+        private void BindSessionsAndDefault()
+        {
+            var sessions = dbHelper.GetSessionsDataTable(); // ensure it's ordered by StartDate in DB helper
+
+            cmbSessionFilter.DisplayMember = "SessionName";
+            cmbSessionFilter.ValueMember = "SessionID";
+            cmbSessionFilter.DataSource = sessions;
+
+            var defaultId = GetDefaultSessionId(sessions);
+            if (defaultId.HasValue)
+                cmbSessionFilter.SelectedValue = defaultId.Value;
+
+            _sessionsLoaded = true;
+
+            // Initial filtered load
+            ReloadClassesForSelectedSession();
+        }
+
+        private int? GetDefaultSessionId(DataTable sessions)
+        {
+            if (sessions == null || sessions.Rows.Count == 0) return null;
+
+            DateTime today = DateTime.Today;
+            DataRow inProgress = null, nextFuture = null;
+
+            foreach (DataRow r in sessions.Rows)
+            {
+                if (!DateTime.TryParse(Convert.ToString(r["StartDate"]), out var start)) continue;
+                if (!DateTime.TryParse(Convert.ToString(r["EndDate"]), out var end)) continue;
+
+                if (start <= today && today <= end)
+                {
+                    inProgress = r;
+                    break; // exact hit wins
+                }
+
+                if (start >= today)
+                {
+                    if (nextFuture == null ||
+                        DateTime.Parse(Convert.ToString(r["StartDate"])) <
+                        DateTime.Parse(Convert.ToString(nextFuture["StartDate"])))
+                    {
+                        nextFuture = r;
+                    }
+                }
+            }
+
+            var pick = inProgress ?? nextFuture;
+            return pick != null ? (int?)Convert.ToInt32(pick["SessionID"]) : null;
+        }
+
+        private void cmbSessionFilter_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!_sessionsLoaded) return; // ignore initial binding churn
+            ReloadClassesForSelectedSession();
+        }
+
+        private void ReloadClassesForSelectedSession()
+        {
+            if (cmbSessionFilter.SelectedValue == null)
+            {
+                // Fallback: show all
+                var all = dbHelper.GetClassesDataTable();
+                PopulateClassListView(all);
+                AdjustFormSize();
+                return;
+            }
+
+            int sessionId = Convert.ToInt32(cmbSessionFilter.SelectedValue);
+
+            // Requires the new helper method:
+            // public DataTable GetClassesBySessionIdDataTable(int sessionId)
+            var dt = dbHelper.GetClassesBySessionIdDataTable(sessionId);
+            PopulateClassListView(dt);
+            AdjustFormSize();
         }
     }
 
@@ -191,8 +280,9 @@ namespace MDSoDv2
 
         public int Compare(object x, object y)
         {
-            int returnVal = String.Compare(((ListViewItem)x).SubItems[col].Text,
-                                            ((ListViewItem)y).SubItems[col].Text);
+            int returnVal = string.Compare(((ListViewItem)x).SubItems[col].Text,
+                                           ((ListViewItem)y).SubItems[col].Text,
+                                           StringComparison.CurrentCulture);
             return ascending ? returnVal : -returnVal;
         }
     }
