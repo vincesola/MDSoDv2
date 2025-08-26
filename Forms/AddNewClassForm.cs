@@ -198,10 +198,12 @@ namespace MDSoDv2
             string newSessionName = AddSessionPrompt.ShowDialog("Enter new session name:", "Add Session");
             if (!string.IsNullOrWhiteSpace(newSessionName))
             {
-                var newSession = new Session { SessionName = newSessionName };
-                dbHelper.AddSession(newSession);
+                // Create the session (uses your shim dates for now) and get its ID
+                int newSessionId = dbHelper.AddSession(newSessionName);
+
+                // Rebind sessions and select the new one
                 PopulateSessions();
-                cmbSession.SelectedValue = newSession.SessionID;
+                cmbSession.SelectedValue = newSessionId;
             }
         }
     }

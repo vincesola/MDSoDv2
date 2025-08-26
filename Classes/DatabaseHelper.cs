@@ -13,13 +13,23 @@ namespace MDSoDv2
 
     public class DatabaseHelper
     {
-        private readonly string dbPath = "Data Source=MDSoDv2.db;Version=3;";
+        // NEW: physical DB file path + connection string
+        private readonly string _dbFilePath;
+        private readonly string dbPath;
 
         public DatabaseHelper()
         {
-            if (!System.IO.File.Exists("MDSoDv2.db"))
+            // Store DB in %ProgramData%\MDSoDv2\MDSoDv2.db (writable for non-admin users)
+            var common = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+            var dir = Path.Combine(common, "MDSoDv2");
+            Directory.CreateDirectory(dir);
+
+            _dbFilePath = Path.Combine(dir, "MDSoDv2.db");
+            dbPath = $"Data Source={_dbFilePath};Version=3;";
+
+            if (!File.Exists(_dbFilePath))
             {
-                SQLiteConnection.CreateFile("MDSoDv2.db");
+                SQLiteConnection.CreateFile(_dbFilePath);
             }
             InitializeDatabase();
         }
@@ -885,7 +895,7 @@ namespace MDSoDv2
             using (var connection = new SQLiteConnection(dbPath))
             {
                 connection.Open();
-                var query = "SELECT * FROM Sessions";
+                var query = "SELECT * FROM Sessions ORDER BY SessionID DESC";
                 using (var command = new SQLiteCommand(query, connection))
                 {
                     using (var reader = command.ExecuteReader())
@@ -955,18 +965,30 @@ namespace MDSoDv2
             }
         }
 
-        public void AddSession(Session session)
+        public int AddSession(string sessionName, DateTime startDate, DateTime endDate)
         {
             using (var connection = new SQLiteConnection(dbPath))
             {
                 connection.Open();
-                var query = "INSERT INTO Sessions (SessionName) VALUES (@SessionName)";
-                using (var command = new SQLiteCommand(query, connection))
+                const string sql = @"
+            INSERT INTO Sessions (SessionName, StartDate, EndDate)
+            VALUES (@name, @start, @end);
+            SELECT last_insert_rowid();";
+                using (var cmd = new SQLiteCommand(sql, connection))
                 {
-                    command.Parameters.AddWithValue("@SessionName", session.SessionName);
-                    command.ExecuteNonQuery();
+                    cmd.Parameters.AddWithValue("@name", sessionName.Trim());
+                    cmd.Parameters.AddWithValue("@start", startDate.ToString("yyyy-MM-dd"));
+                    cmd.Parameters.AddWithValue("@end", endDate.ToString("yyyy-MM-dd"));
+                    var id = (long)cmd.ExecuteScalar();
+                    return (int)id;
                 }
             }
+        }
+
+        public int AddSession(string sessionName)
+        {
+            // TEMP default window; replace callers to use the date-aware overload soon
+            return AddSession(sessionName, DateTime.Today, DateTime.Today.AddMonths(3));
         }
 
         #endregion Session Methods
@@ -1389,35 +1411,74 @@ namespace MDSoDv2
             }
         }
 
+        // Use this for places that expect IEnumerable<Parent>
         public List<Parent> GetParentsByStudentId(int studentId)
         {
-            var parents = new List<Parent>();
-            using (var connection = new SQLiteConnection(dbPath))
+            var list = new List<Parent>();
+            using (var conn = new SQLiteConnection(dbPath))
             {
-                connection.Open();
-                var query = "SELECT * FROM Parents WHERE StudentID = @StudentID";
-                using (var command = new SQLiteCommand(query, connection))
+                conn.Open();
+                const string sql = @"
+            SELECT 
+                p.ParentID,
+                p.FirstName,
+                p.LastName,
+                p.PhoneNumber,
+                p.Email
+            FROM Parents p
+            INNER JOIN StudentParent sp ON sp.ParentID = p.ParentID
+            WHERE sp.StudentID = @StudentID
+            ORDER BY p.LastName, p.FirstName;";
+                using (var cmd = new SQLiteCommand(sql, conn))
                 {
-                    command.Parameters.AddWithValue("@StudentID", studentId);
-                    using (var reader = command.ExecuteReader())
+                    cmd.Parameters.AddWithValue("@StudentID", studentId);
+                    using (var r = cmd.ExecuteReader())
                     {
-                        while (reader.Read())
+                        while (r.Read())
                         {
-                            parents.Add(new Parent
+                            list.Add(new Parent
                             {
-                                ParentID = reader.GetInt32(0),
-                                StudentID = reader.GetInt32(1),
-                                FirstName = reader.GetString(2),
-                                LastName = reader.GetString(3),
-                                PhoneNumber = reader.GetString(4),
-                                Email = reader.GetString(5),
-                                Relationship = reader.GetString(6)
+                                ParentID = r.GetInt32(0),
+                                FirstName = r.IsDBNull(1) ? "" : r.GetString(1),
+                                LastName = r.IsDBNull(2) ? "" : r.GetString(2),
+                                PhoneNumber = r.IsDBNull(3) ? "" : r.GetString(3),
+                                Email = r.IsDBNull(4) ? "" : r.GetString(4),
                             });
                         }
                     }
                 }
             }
-            return parents;
+            return list;
+        }
+
+        // DataTable shape for grids
+        public DataTable GetParentsByStudentIdTable(int studentId)
+        {
+            var dt = new DataTable();
+            using (var conn = new SQLiteConnection(dbPath))
+            {
+                conn.Open();
+                const string sql = @"
+            SELECT 
+                p.ParentID,
+                p.FirstName,
+                p.LastName,
+                p.PhoneNumber,  -- alias as 'Phone' if your grid expects that name
+                p.Email
+            FROM Parents p
+            INNER JOIN StudentParent sp ON sp.ParentID = p.ParentID
+            WHERE sp.StudentID = @StudentID
+            ORDER BY p.LastName, p.FirstName;";
+                using (var cmd = new SQLiteCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@StudentID", studentId);
+                    using (var da = new SQLiteDataAdapter(cmd))
+                    {
+                        da.Fill(dt);
+                    }
+                }
+            }
+            return dt;
         }
 
         #endregion Parent Methods
